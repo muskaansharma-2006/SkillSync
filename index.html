@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSync — Candidate Intelligence Dashboard</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=20260914-3">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link active"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="role-switcher">
+            <button class="role-btn active" id="role-candidate">Candidate</button>
+            <button class="role-btn" id="role-recruiter">Recruiter</button>
+          </div>
+          <div class="user-profile">
+            <div class="avatar" id="dashAvatar">--</div>
+            <div class="user-info">
+              <span class="user-name" id="dashHeaderName">Candidate</span>
+              <span class="user-role" id="dashHeaderRole">Not Assessed</span>
+            </div>
+          </div>
+          <a href="settings.html" class="btn btn-secondary btn-sm" title="Settings"><i class="fa-solid fa-gear"></i></a>
+          <button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <!-- Greeting & Top Banner -->
+      <div class="page-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-sparkles"></i> AI Competency Vector Active</span>
+            <h1 class="page-title" id="dashGreeting">Welcome to SkillSync 👋</h1>
+            <p class="page-subtitle">Demonstrate your practical skills through real-world challenges and build proof of capability.</p>
+          </div>
+          <a href="assessments.html" class="btn btn-primary btn-lg" id="dashMainCta">
+            <i class="fa-solid fa-play"></i> Start Assessment
+          </a>
+        </div>
+      </div>
+
+      <!-- Optional Field Discovery Entry Point -->
+      <div class="card discovery-entry-card" style="margin-bottom: 2rem;">
+        <div class="discovery-entry-icon"><i class="fa-solid fa-compass"></i></div>
+        <div>
+          <span class="badge badge-cyan">Choose a direction</span>
+          <h2>Not sure where to start?</h2>
+          <p>Take the Field Discovery Quiz for a quick, interest-based suggestion before choosing an assessment.</p>
+        </div>
+        <a href="field-discovery.html" class="btn btn-secondary"><i class="fa-solid fa-compass"></i> Take the Quiz</a>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid-4" style="margin-bottom: 2rem;">
+        <div class="card card-hover-glow">
+          <div class="stat-box">
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--primary);">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="dashOverallScore" style="color: #a5b4fc;">0%</div>
+              <div class="stat-label">Overall Competency</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-hover-glow">
+          <div class="stat-box">
+            <div class="stat-icon" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="dashCompletedCount">0</div>
+              <div class="stat-label">Assessments Completed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-hover-glow">
+          <div class="stat-box">
+            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: var(--accent-purple);">
+              <i class="fa-solid fa-brain"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="dashSkillsCount">0</div>
+              <div class="stat-label">Skills Verified</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-hover-glow">
+          <div class="stat-box">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="dashSkillLevel" style="font-size: 1.25rem;">Not Assessed</div>
+              <div class="stat-label">Verified Skill Level</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Grid Layout -->
+      <div class="grid-dashboard">
+        
+        <!-- Left Column: Primary Highlights & Skills -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Banner CTA Card -->
+          <div class="card banner-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <span class="badge badge-amber" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-hourglass-half"></i> In Progress Simulation</span>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Python Practical Competency</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">Challenge 3 of 8 • Time Remaining: 18:42</p>
+              </div>
+              <div style="text-align: right; min-width: 180px;">
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Current Challenge Progress: 37%</div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width: 37%;"></div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem;">
+              <a href="assessment.html" class="btn btn-primary"><i class="fa-solid fa-code"></i> Resume IDE Challenge</a>
+              <a href="assessment-details.html" class="btn btn-secondary">View Instructions</a>
+            </div>
+          </div>
+
+          <!-- Skills Breakdown Card -->
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700;"><i class="fa-solid fa-sliders" style="color: var(--primary); margin-right: 0.5rem;"></i> Skills Breakdown</h3>
+              <a href="skill-gap.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-chart-line"></i> Skill Gap Analysis</a>
+            </div>
+
+            <div id="dashSkillsBreakdownList" style="display: flex; flex-direction: column; gap: 1rem;">
+              <!-- Dynamic real competency progress bars or empty state rendered here -->
+            </div>
+          </div>
+
+          <!-- AI Competency Summary Callout -->
+          <div class="card" style="background: rgba(17, 24, 39, 0.9); border-color: rgba(6, 182, 212, 0.3);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-cyan); font-size: 1.1rem;"></i>
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">AI Competency Intelligence</h4>
+            </div>
+            <p id="dashAiInsightQuote" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+              Complete an assessment to unlock your personalized AI competency evaluation.
+            </p>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+              <a href="mentor.html" class="btn btn-primary btn-sm" style="flex: 1; text-align: center;"><i class="fa-solid fa-robot"></i> Ask AI Mentor</a>
+              <a href="practice.html" class="btn btn-secondary btn-sm" style="flex: 1; text-align: center;"><i class="fa-solid fa-bullseye"></i> Practice</a>
+            </div>
+          </div>
+
+          <!-- Growth Trend Visualization -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-chart-line" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i> Competency Growth Trend</h3>
+            <div style="height: 220px; position: relative;">
+              <canvas id="competencyTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Radar Chart & AI Insights -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Competency Radar Card -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; text-align: center;"><i class="fa-solid fa-bullseye" style="color: var(--primary); margin-right: 0.4rem;"></i> Competency Vector</h3>
+            <div style="height: 240px; position: relative;">
+              <canvas id="competencyRadarChart"></canvas>
+            </div>
+            <div style="text-align: center; margin-top: 0.5rem;">
+              <a href="result.html" class="btn btn-secondary btn-sm" style="width: 100%;"><i class="fa-solid fa-file-contract"></i> Full AI Result Report</a>
+            </div>
+          </div>
+
+          <!-- Recommended Challenge -->
+          <div class="card card-hover-glow">
+            <span class="badge badge-purple" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-star"></i> Recommended for You</span>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">Debug a Data Processing Pipeline</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Gain +5% Debugging competency by identifying memory leaks in an ETL script.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span style="font-size: 0.75rem; color: var(--text-dim);"><i class="fa-regular fa-clock"></i> 20 mins</span>
+              <a href="practice.html" class="btn btn-primary btn-sm">Start Practice</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <strong>SkillSync</strong> — Don't prove what you learned. Demonstrate what you can do.
+        </div>
+        <div style="display: flex; gap: 1.5rem; font-size: 0.85rem;">
+          <a href="assessments.html">Assessments</a>
+          <a href="passport.html">Proof of Skill</a>
+          <a href="recruiter.html">Recruiter View</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

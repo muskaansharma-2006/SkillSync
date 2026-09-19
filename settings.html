@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — SkillSync</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="navbar"><div class="nav-container"><a href="index.html" class="brand-logo"><div class="brand-icon"><i class="fa-solid fa-bolt"></i></div><span>SkillSync</span><span class="brand-badge">AI Platform</span></a><div class="nav-actions"><a href="index.html" class="btn btn-secondary btn-sm">Dashboard</a><button id="logoutBtn" class="btn btn-primary btn-sm"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button></div></div></header>
+    <main class="main-content settings-main">
+      <div class="page-header"><span class="badge badge-cyan"><i class="fa-solid fa-sliders"></i> Account settings</span><h1 class="page-title">Settings</h1><p class="page-subtitle">Manage your account and optional AI configuration.</p></div>
+      <div class="settings-grid">
+        <section class="card"><h2>Profile</h2><p class="settings-muted">Your authenticated SkillSync account.</p><div class="settings-profile"><div class="avatar" id="settingsAvatar">SS</div><div><strong id="settingsName">SkillSync user</strong><span id="settingsEmail"></span><span id="settingsRole"></span></div></div></section>
+        <section class="card ai-config-card"><div class="settings-heading"><div><span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Connected</span><h2>SkillSync AI</h2><p class="settings-muted">Powered by Gemini through the SkillSync backend.</p></div><i class="fa-solid fa-wand-magic-sparkles settings-icon"></i></div><div class="settings-divider"></div><h3>Use my own Gemini API key <span class="badge badge-amber">Optional advanced feature</span></h3><p class="settings-muted">Secure user-key storage is not enabled because this prototype has no persistent credential vault yet. Your normal SkillSync AI experience already works through the backend configuration.</p><div class="byok-placeholder"><i class="fa-solid fa-lock"></i><span>BYOK will be enabled after secure database-backed encrypted storage is connected. No key is requested or stored here.</span></div><button class="btn btn-secondary" disabled>Connect / Test Key</button></section>
+      </div>
+    </main>
+    <footer class="footer">SkillSync — Don't prove what you learned. Demonstrate what you can do.</footer>
+  </div>
+  <script src="script.js?v=20260914-3"></script>
+  <script src="settings.js?v=20260914-1"></script>
+</body>
+</html>

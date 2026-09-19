@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate Profile & Job Fit — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="recruiter.html" class="brand-logo">
+          <div class="brand-icon" style="background: linear-gradient(135deg, var(--accent-purple), var(--primary));">
+            <i class="fa-solid fa-briefcase"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">Employer Suite</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="recruiter.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+          <li><a href="recruiter.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Open Jobs</a></li>
+          <li><a href="candidate.html" class="nav-link active"><i class="fa-solid fa-users"></i> Candidates</a></li>
+          <li><a href="recruiter.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Analytics</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="user-profile">
+            <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">HR</div>
+            <div class="user-info">
+              <span class="user-name">Talent Lead</span>
+              <span class="user-role">Employer View</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <div style="margin-bottom: 1.5rem;">
+        <a href="recruiter.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i> Back to Candidate Matrix</a>
+      </div>
+      <div id="candidateProfileError" class="card" style="display: none; padding: 2rem; text-align: center;"></div>
+
+      <!-- Candidate Header Banner -->
+      <div id="candidateProfileBanner" class="card banner-card" style="display: none; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+          
+          <div style="display: flex; gap: 1.25rem; align-items: center;">
+            <div id="candidateProfileAvatar" class="avatar" style="width: 72px; height: 72px; font-size: 1.6rem; border-color: var(--accent-cyan);">—</div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <h1 id="candidateProfileName" style="font-size: 1.8rem; font-weight: 800; color: #fff;">Loading candidate…</h1>
+                <span class="badge badge-green"><i class="fa-solid fa-shield-check"></i> Verified Passport</span>
+              </div>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Evaluating position match for: <strong id="candidateJobRole" style="color: var(--accent-cyan);">Loading…</strong>
+              </p>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 2rem;">
+            <div style="text-align: right;">
+              <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Overall Job Fit</div>
+              <div id="candidateJobFit" style="font-size: 2.2rem; font-weight: 800; color: var(--accent-green); line-height: 1;">—</div>
+              <div id="candidateCompetencyScore" style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 600;">Loading competency score…</div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <button class="btn btn-primary btn-sm" onclick="showToast('Interview Invitation sent to Muskaan!', 'success')">
+                <i class="fa-solid fa-paper-plane"></i> Invite to Interview
+              </button>
+              <a href="passport.html" class="btn btn-secondary btn-sm">
+                <i class="fa-solid fa-id-card"></i> View Public Passport
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Main Layout Grid -->
+      <div id="candidateProfileBody" class="grid-dashboard" style="display: none;">
+        
+        <!-- Left Column: Skill Matching & Practical Evidence -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- AI Hiring Recommendation Statement -->
+          <div class="card" style="border-left: 4px solid var(--accent-green); background: rgba(17, 24, 39, 0.9);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; color: var(--accent-green); font-weight: 700; font-size: 0.9rem;">
+              <i class="fa-solid fa-brain"></i> AI Hiring Recommendation
+            </div>
+            <p id="candidateHiringRecommendation" style="font-size: 0.9rem; color: var(--text-main); line-height: 1.6;">
+              "Muskaan is a <strong>Strong Match (84% Job Fit)</strong> for the Junior Python Developer role. Demonstrated top-tier algorithmic problem solving (91%) and Python fundamentals (87%). Code execution logs show clean O(N) performance and rapid challenge completion."
+            </p>
+          </div>
+
+          <!-- Skill-by-Skill Job Requirement Matching -->
+          <div class="card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;">
+              <i class="fa-solid fa-sliders" style="color: var(--primary); margin-right: 0.5rem;"></i> Job Skill Requirement Comparison
+            </h3>
+
+            <div id="candidateRequirementComparison" style="display: flex; flex-direction: column; gap: 1rem;">
+              
+              <!-- Python -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>Python Programming (Required: 85%)</span>
+                  <span style="color: var(--accent-green);">Candidate: 87% ✓</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill green" style="width: 87%;"></div>
+                </div>
+              </div>
+
+              <!-- SQL -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>SQL & Data Queries (Required: 75%)</span>
+                  <span style="color: var(--accent-green);">Candidate: 82% ✓</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill green" style="width: 82%;"></div>
+                </div>
+              </div>
+
+              <!-- Problem Solving -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>Problem Solving & Logic (Required: 80%)</span>
+                  <span style="color: var(--accent-green);">Candidate: 91% ✓</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill green" style="width: 91%;"></div>
+                </div>
+              </div>
+
+              <!-- Debugging -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>Debugging & Exception Handling (Required: 80%)</span>
+                  <span style="color: var(--accent-amber);">Candidate: 68% (Minor Gap)</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width: 68%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Verified Code Artifact Evidence -->
+          <div class="card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">
+              <i class="fa-solid fa-code" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i> Practical Code Submission Artifact
+            </h3>
+
+            <div style="background: #050811; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #cbd5e1;">
+              <span style="color: var(--text-dim);"># Automated Verification Artifact — Challenge #3 Submission:</span><br>
+              <span style="color: #f472b6;">def</span> <span style="color: #38bdf8;">calculate_transaction_summary</span>(transactions, tax_rate=<span style="color: #fde047;">0.15</span>):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;gross_total = <span style="color: #38bdf8;">sum</span>(transactions)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;tax_amount = gross_total * tax_rate <span style="color: #f472b6;">if</span> tax_rate > <span style="color: #fde047;">0</span> <span style="color: #f472b6;">else</span> <span style="color: #fde047;">0.0</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #f472b6;">return</span> {<span style="color: #a78bfa;">"gross"</span>: <span style="color: #38bdf8;">round</span>(gross_total, <span style="color: #fde047;">2</span>), <span style="color: #a78bfa;">"net"</span>: <span style="color: #38bdf8;">round</span>(gross_total + tax_amount, <span style="color: #fde047;">2</span>)}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Match Radar Chart & Recruiter Actions -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: 1rem;">Competency Alignment</h3>
+            <div style="height: 240px; position: relative;">
+              <canvas id="candidateMatchRadar"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Employer Actions</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <button class="btn btn-primary" style="width: 100%;" onclick="showToast('Interview link sent to candidate!', 'success')">
+                <i class="fa-solid fa-calendar-check"></i> Schedule Technical Round
+              </button>
+              <button class="btn btn-cyan" style="width: 100%;" onclick="showToast('Downloading Candidate PDF Dossier...', 'info')">
+                <i class="fa-solid fa-file-pdf"></i> Export Candidate Dossier
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong>SkillSync</strong> — Employer Candidate Profile</div>
+        <div><a href="recruiter.html">Back to Dashboard</a></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

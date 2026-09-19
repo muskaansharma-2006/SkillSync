@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Competency Result — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link active"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="user-profile">
+            <div class="avatar">MS</div>
+            <div class="user-info">
+              <span class="user-name">Muskaan 👋</span>
+              <span class="user-role">Candidate View</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <div class="page-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge badge-green" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check"></i> Evaluation Complete • Cryptographically Verified</span>
+            <h1 class="page-title">AI Competency Result Report</h1>
+            <p class="page-subtitle" id="resultSubtitle">Practical Competency Assessment</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <a href="passport.html" class="btn btn-cyan"><i class="fa-solid fa-id-card"></i> Claim in Passport</a>
+            <a href="skill-gap.html" class="btn btn-primary"><i class="fa-solid fa-chart-line"></i> View Skill Gap Analysis</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Overview Score Ring & AI Highlight Banner -->
+      <div class="card banner-card" style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+          
+          <!-- Score Ring Box -->
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div id="resultRingBox" style="width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #0b0f19 60%, transparent 61%), conic-gradient(var(--primary) 0%, rgba(255,255,255,0.1) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);">
+              <div style="text-align: center;">
+                <div id="resultScoreValue" style="font-size: 2rem; font-weight: 800; color: #fff; line-height: 1;">--</div>
+                <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Score</div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <span class="badge badge-primary" id="resultLevelBadge">Evaluation</span>
+                <span class="badge badge-cyan"><i class="fa-solid fa-shield-check"></i> Verified AI Vector</span>
+              </div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);" id="resultAssessmentTitle">Assessment Result</h2>
+              <p style="font-size: 0.88rem; color: var(--text-muted);" id="resultMetaInfo">Automated Rubric Evaluation Completed</p>
+            </div>
+          </div>
+
+          <!-- AI Executive Statement Quote -->
+          <div class="glass-panel" style="padding: 1.25rem; max-width: 460px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--accent-cyan); font-weight: 700; font-size: 0.85rem;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Competency Insight
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-main); font-style: italic; line-height: 1.5;" id="resultAiInsight">
+              "Evaluation in progress..."
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Main Result Breakdown Grid -->
+      <div class="grid-dashboard">
+        
+        <!-- Left Column: Score Breakdown Bars & Evidence -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Competency Sub-scores -->
+          <div class="card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;">
+              <i class="fa-solid fa-list-check" style="color: var(--primary); margin-right: 0.5rem;"></i> Competency Area Breakdown
+            </h3>
+
+            <div id="resultBreakdownList" style="display: flex; flex-direction: column; gap: 1.15rem;">
+              <!-- Dynamic skill breakdown items rendered here -->
+            </div>
+          </div>
+
+          <!-- Strengths vs Areas for Improvement -->
+          <div class="grid-2">
+            <div class="card" style="border-top: 3px solid var(--accent-green);">
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--accent-green); margin-bottom: 0.75rem;">
+                <i class="fa-solid fa-thumbs-up"></i> Top Verified Strengths
+              </h4>
+              <ul id="resultStrengthsList" style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.5rem; list-style: none;">
+                <!-- Dynamic strengths items rendered here -->
+              </ul>
+            </div>
+
+            <div class="card" style="border-top: 3px solid var(--accent-amber);">
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--accent-amber); margin-bottom: 0.75rem;">
+                <i class="fa-solid fa-bullseye"></i> Targeted Growth Areas
+              </h4>
+              <ul id="resultImprovementsList" style="font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.5rem; list-style: none;">
+                <!-- Dynamic improvement items rendered here -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Demonstrated Code Evidence Log -->
+          <div class="card">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">
+              <i class="fa-solid fa-code" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i> Verified Code Demonstration Evidence
+            </h3>
+
+            <div style="background: #050811; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; font-family: var(--font-code); font-size: 0.8rem; color: #cbd5e1;">
+              <span style="color: var(--text-dim);"># Challenge 3 Solution — Evaluated snippet:</span><br>
+              <span style="color: #f472b6;">def</span> <span style="color: #38bdf8;">calculate_transaction_summary</span>(transactions, tax_rate=<span style="color: #fde047;">0.15</span>):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;gross_total = <span style="color: #38bdf8;">sum</span>(transactions)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;tax_amount = gross_total * tax_rate <span style="color: #f472b6;">if</span> tax_rate > <span style="color: #fde047;">0</span> <span style="color: #f472b6;">else</span> <span style="color: #fde047;">0.0</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #f472b6;">return</span> {<span style="color: #a78bfa;">"gross"</span>: <span style="color: #38bdf8;">round</span>(gross_total, <span style="color: #fde047;">2</span>), <span style="color: #a78bfa;">"net"</span>: <span style="color: #38bdf8;">round</span>(gross_total + tax_amount, <span style="color: #fde047;">2</span>)}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Radar Visual & Action Plan -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Result Radar Canvas -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: 1rem;">Competency Radar</h3>
+            <div style="height: 250px; position: relative;">
+              <canvas id="resultRadarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Next Actions -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Recommended Next Steps</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <a href="skill-gap.html" class="btn btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-chart-line"></i> Open Skill Gap Roadmap
+              </a>
+              <a href="practice.html" class="btn btn-cyan" style="width: 100%;">
+                <i class="fa-solid fa-fire"></i> Practice Debugging Scenarios
+              </a>
+              <a href="passport.html" class="btn btn-secondary" style="width: 100%;">
+                <i class="fa-solid fa-share-nodes"></i> Share Verifiable Proof
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong>SkillSync</strong> — Verified Skill Result Engine</div>
+        <div><a href="index.html">Back to Dashboard</a></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

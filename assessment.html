@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Practical Simulation — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="background: #070a12;">
+  <div class="app-container">
+    
+    <!-- Assessment Specific Top Header -->
+    <header class="navbar" style="background: #0b0f19; border-bottom-color: rgba(255,255,255,0.1);">
+      <div class="nav-container" style="max-width: 100%;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="assessments.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-xmark"></i> Exit</a>
+          <div style="font-weight: 700; font-size: 1rem; color: var(--text-main);">
+            Python Practical Competency
+          </div>
+          <span class="badge badge-amber"><i class="fa-solid fa-list-check"></i> Challenge 3 of 8</span>
+        </div>
+
+        <!-- Timer Display -->
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div class="glass-panel" style="padding: 0.4rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-code); font-weight: 700; font-size: 1.1rem; color: var(--accent-cyan);">
+            <i class="fa-regular fa-clock" style="color: var(--accent-amber);"></i>
+            <span id="assessmentTimer">18:42</span>
+          </div>
+
+          <button id="submitAssessmentBtn" class="btn btn-primary">
+            <i class="fa-solid fa-paper-plane"></i> Submit Assessment
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- IDE Split Screen Layout -->
+    <main style="flex: 1; padding: 1rem 1.5rem; max-width: 1600px; margin: 0 auto; width: 100%;">
+      
+      <div class="ide-container">
+        
+        <!-- Left Panel: Problem Description & Test Cases -->
+        <div class="ide-panel">
+          <div class="ide-header">
+            <span><i class="fa-solid fa-file-code" style="color: var(--primary);"></i> Problem Statement</span>
+            <span class="badge badge-cyan">Python 3.11</span>
+          </div>
+
+          <div style="padding: 1.25rem; overflow-y: auto; flex: 1;">
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">
+              Fix the Broken Transaction Calculator
+            </h2>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+              A legacy payment processing script is crashing when handling customer refunds with negative transaction balances and zero-tax currencies.
+            </p>
+
+            <div style="margin: 1.25rem 0; padding: 1rem; background: rgba(0, 0, 0, 0.4); border-left: 3px solid var(--primary); border-radius: var(--radius-sm);">
+              <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem;">Task Objectives:</h4>
+              <ol style="font-size: 0.82rem; color: var(--text-muted); padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                <li>Fix the `ZeroDivisionError` when tax rate is passed as `0.0`.</li>
+                <li>Ensure negative amount line items are processed as valid refund deductions.</li>
+                <li>Calculate total net balance rounded to 2 decimal places.</li>
+              </ol>
+            </div>
+
+            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">Sample Inputs & Outputs</h4>
+            
+            <div style="font-family: var(--font-code); font-size: 0.8rem; background: #050811; border: 1px solid var(--border-color); padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 1rem;">
+              <span style="color: var(--text-dim);"># Sample Input:</span><br>
+              transactions = [100.0, 250.0, -50.0]<br>
+              tax_rate = 0.15<br><br>
+              <span style="color: var(--text-dim);"># Expected Output:</span><br>
+              {"gross": 300.0, "tax": 45.0, "net": 345.0}
+            </div>
+
+            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">Automated Verification Suite</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem;">
+                <span>Test 1: Standard Calculation</span>
+                <span class="badge badge-green"><i class="fa-solid fa-check"></i> Ready</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem;">
+                <span>Test 2: Negative Amounts (Refunds)</span>
+                <span class="badge badge-green"><i class="fa-solid fa-check"></i> Ready</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem;">
+                <span>Test 3: Zero Tax Rate Edge Case</span>
+                <span class="badge badge-amber"><i class="fa-solid fa-triangle-exclamation"></i> Pending</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Panel: Code Editor & Console Output -->
+        <div class="ide-panel">
+          <div class="ide-header">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <i class="fa-solid fa-code" style="color: var(--accent-cyan);"></i>
+              <span>solution.py</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span id="testResultsBadge" class="badge badge-amber"><i class="fa-solid fa-circle-dot"></i> Unchecked</span>
+              <button id="runCodeBtn" class="btn btn-cyan btn-sm">
+                <i class="fa-solid fa-play"></i> Run Code
+              </button>
+            </div>
+          </div>
+
+          <!-- Code Editor Textarea -->
+          <textarea class="ide-editor" spellcheck="false"># Challenge 3: Fix the Broken Transaction Calculator
+# BUG ALERT: Legacy code crashes on zero-tax rate (ZeroDivisionError)
+# BUG ALERT: Negative refund amounts (-50.0) are ignored in calculation
+
+def calculate_transaction_summary(transactions, tax_rate=0.15):
+    if not transactions:
+        return {"gross": 0.0, "tax": 0.0, "net": 0.0}
+    
+    # BROKEN LOGIC: Ignores negative amounts (refunds)
+    gross_total = 0.0
+    for amount in transactions:
+        if amount > 0:
+            gross_total += amount
+            
+    # BROKEN LOGIC: Causes ZeroDivisionError when tax_rate is 0.0
+    tax_amount = gross_total / tax_rate 
+    
+    return {
+        "gross": gross_total,
+        "tax": tax_amount,
+        "net": gross_total + tax_amount
+    }
+
+# Candidate Test Invocation
+sample = [100.0, 250.0, -50.0]
+print("Running test...", calculate_transaction_summary(sample, 0.15))
+</textarea>
+
+          <!-- Interactive Console Output -->
+          <div class="ide-console">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; color: var(--text-dim); font-size: 0.75rem;">
+              <span>CONSOLE OUTPUT</span>
+              <span>Python 3.11 Standard Output</span>
+            </div>
+            <div id="consoleOutput">
+              > Click "Run Code" to compile python script and execute unit assertions against sandbox engine.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- AI Evaluation Loading Modal Overlay -->
+  <div class="modal-overlay" id="submissionModal">
+    <div class="modal-box">
+      <div class="loader-spinner"></div>
+      <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">
+        Assessment Submitted Successfully
+      </h3>
+      <p id="modalStatusMsg" style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+        AI evaluation is being prepared... Analyzing logic, execution speed, and edge-case handling.
+      </p>
+    </div>
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

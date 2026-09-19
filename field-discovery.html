@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field Discovery Quiz — SkillSync</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=20260914-2">
+</head>
+<body>
+  <div class="app-container">
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="home.html" class="brand-logo"><div class="brand-icon"><i class="fa-solid fa-compass"></i></div><span>SkillSync</span><span class="brand-badge">Field Discovery</span></a>
+        <div class="nav-actions"><a href="index.html" class="btn btn-secondary btn-sm">Skip, I know what I want</a></div>
+      </div>
+    </header>
+
+    <main class="main-content discovery-main">
+      <section class="discovery-shell" aria-labelledby="discoveryTitle">
+        <div class="discovery-intro">
+          <span class="badge badge-cyan"><i class="fa-solid fa-compass"></i> A quick starting point</span>
+          <h1 id="discoveryTitle">Find a field worth exploring.</h1>
+          <p>This short quiz uses your interests and preferences to suggest a few directions. It takes less than three minutes and is not an assessment of ability.</p>
+        </div>
+
+        <div id="quizView" class="card discovery-card">
+          <div class="discovery-progress-header"><span id="questionCount">Question 1 of 8</span></div>
+          <div class="discovery-progress-label"><span id="questionPercent">13%</span></div>
+          <div class="progress-bar-bg discovery-progress"><div id="quizProgress" class="progress-bar-fill" style="width: 13%;"></div></div>
+          <div class="discovery-question-block"><span class="badge badge-primary" id="questionTopic">How you like to think</span><h2 id="questionText"></h2><div id="answerOptions" class="discovery-options"></div></div>
+          <div class="discovery-actions"><button id="backQuestion" class="btn btn-secondary" type="button" disabled><i class="fa-solid fa-arrow-left"></i> Back</button><button id="nextQuestion" class="btn btn-primary" type="button" disabled>Next <i class="fa-solid fa-arrow-right"></i></button></div>
+        </div>
+
+        <div id="resultView" class="discovery-result" hidden>
+          <div class="card banner-card discovery-result-header"><span class="badge badge-green"><i class="fa-solid fa-compass"></i> Your starting directions</span><h2>Here are a few fields to explore.</h2><p>These suggestions reflect your preferences, not a measure of ability. Try an assessment to discover what you can demonstrate in practice.</p></div>
+          <div id="suggestionCards" class="grid-3 discovery-suggestions"></div>
+          <div class="discovery-disclaimer"><i class="fa-solid fa-circle-info"></i><span>This is a starting point based on your interests, not a measure of ability. You can change direction at any time.</span></div>
+          <div class="discovery-result-actions"><a href="index.html" class="btn btn-secondary"><i class="fa-solid fa-chart-pie"></i> Go to Dashboard</a><button id="retakeQuiz" class="btn btn-primary" type="button"><i class="fa-solid fa-rotate-right"></i> Retake Quiz</button></div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><div><strong>SkillSync</strong> — Explore first. Demonstrate next.</div></footer>
+  </div>
+  <script src="route-guard.js?v=20260914-1"></script>
+  <script src="field-discovery.js?v=20260914-2"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

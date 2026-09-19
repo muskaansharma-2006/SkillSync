@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Gap Analysis & Roadmap — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="user-profile">
+            <div class="avatar">MS</div>
+            <div class="user-info">
+              <span class="user-name">Muskaan 👋</span>
+              <span class="user-role">Candidate View</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <div class="page-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span class="badge badge-cyan"><i class="fa-solid fa-crosshair"></i> Target Role:</span>
+              <select id="targetRoleSelect" style="background: rgba(11, 15, 25, 0.9); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.4); border-radius: var(--radius-sm); padding: 0.25rem 0.6rem; font-weight: 700; font-size: 0.85rem; cursor: pointer; outline: none;">
+                <option value="Python Developer">Python Developer</option>
+                <option value="Java Developer">Java Developer</option>
+                <option value="Data Analyst">Data Analyst</option>
+                <option value="Backend Engineer">Backend Engineer</option>
+                <option value="Frontend Engineer">Frontend Engineer</option>
+              </select>
+            </div>
+            <h1 class="page-title"><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Skill Gap Analysis</h1>
+            <p class="page-subtitle">Identify exact competency deltas between your current verified capabilities and target job role benchmark.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: flex-end;">
+            <a href="mentor.html" class="btn btn-secondary"><i class="fa-solid fa-robot"></i> Ask AI Mentor</a>
+            <a href="practice.html" id="topPracticeCta" class="btn btn-primary btn-lg"><i class="fa-solid fa-play"></i> Start Guided Practice</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout Grid -->
+      <div class="grid-dashboard" id="skillGapMainLayout">
+        
+        <!-- Left Column: Skill Bars & Target Comparisons -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Current vs Target Skill Card -->
+          <div class="card" id="skillGapComparisonCard">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <h3 style="font-size: 1.25rem; font-weight: 700;">Current Competency vs. Target Benchmark</h3>
+              <span class="badge badge-primary" id="targetMatchBadge">Target Match: --</span>
+            </div>
+
+            <div id="skillGapComparisonList" style="display: flex; flex-direction: column; gap: 1.5rem;">
+              <!-- Dynamic skill gap comparison items or empty state rendered here -->
+            </div>
+          </div>
+
+          <!-- 4-Week Actionable Roadmap -->
+          <div class="card" id="skillGapRoadmapCard">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">
+              <i class="fa-solid fa-map-location-dot" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i> 4-Week Personal Growth Roadmap
+            </h3>
+
+            <div class="timeline" id="skillGapTimeline">
+              <!-- Dynamic roadmap timeline items rendered here -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Priority Summary -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <div class="card" id="primaryGapFocusCard" style="border-top: 3px solid var(--accent-amber);">
+            <!-- Dynamic primary gap focus content rendered here -->
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong>SkillSync</strong> — AI Gap Intelligence</div>
+        <div><a href="index.html">Back to Dashboard</a></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

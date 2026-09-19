@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assessments Catalog — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link active"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="role-switcher">
+            <button class="role-btn active" id="role-candidate">Candidate</button>
+            <button class="role-btn" id="role-recruiter">Recruiter</button>
+          </div>
+          <div class="user-profile">
+            <div class="avatar">MS</div>
+            <div class="user-info">
+              <span class="user-name">Muskaan 👋</span>
+              <span class="user-role">Intermediate Level</span>
+            </div>
+          </div>
+          <button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <div class="page-header">
+        <h1 class="page-title"><i class="fa-solid fa-laptop-code" style="color: var(--primary);"></i> Practical Skill Simulations</h1>
+        <p class="page-subtitle">Demonstrate real-world coding, logic, and debugging capabilities under realistic automated conditions.</p>
+      </div>
+
+      <!-- Search & Filters Toolbar -->
+      <div class="card" style="margin-bottom: 2rem; padding: 1.25rem;">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+          
+          <!-- Search Bar -->
+          <div style="flex: 1; min-width: 260px; position: relative;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);"></i>
+            <input type="text" id="assessmentSearch" placeholder="Search by skill, title, or language..." style="width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main);">
+          </div>
+
+          <!-- Visible Assessment Filters -->
+          <div class="assessment-filters" role="group" aria-label="Assessment filters">
+            <button class="filter-chip active" type="button" data-filter="all">All</button>
+            <button class="filter-chip" type="button" data-filter="technical">Technical</button>
+            <button class="filter-chip" type="button" data-filter="analytical">Analytical</button>
+            <button class="filter-chip" type="button" data-filter="communication">Communication</button>
+            <button class="filter-chip" type="button" data-filter="beginner">Beginner</button>
+            <button class="filter-chip" type="button" data-filter="intermediate">Intermediate</button>
+            <button class="filter-chip" type="button" data-filter="advanced">Advanced</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Assessments Cards Grid -->
+      <div class="grid-3" id="assessmentsGrid">
+
+        <!-- Card 1: Python Practical Competency (In Progress) -->
+        <div class="card card-hover-glow assessment-card-item" data-title="Python Practical Competency" data-category="programming" data-filters="technical intermediate">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-amber"><i class="fa-solid fa-circle-play"></i> In Progress (37%)</span>
+            <span class="badge badge-primary">Intermediate</span>
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Python Practical Competency</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.4;">
+            Assess practical Python ability through realistic coding, error handling, and data processing scenarios.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.8rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 30 minutes</span>
+            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> 8 Challenges</span>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+              <span>Progress</span>
+              <span style="color: var(--accent-amber); font-weight: 600;">37%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 37%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <span class="badge badge-primary">Python</span>
+            <span class="badge badge-cyan">Algorithms</span>
+            <span class="badge badge-purple">Debugging</span>
+          </div>
+
+          <a href="assessment-details.html" class="btn btn-primary" style="width: 100%;">
+            <i class="fa-solid fa-play"></i> Continue Simulation
+          </a>
+        </div>
+
+        <!-- Card 2: SQL & Data Analysis Benchmark (Completed) -->
+        <div class="card card-hover-glow assessment-card-item" data-title="SQL & Data Analysis Benchmark" data-category="data" data-filters="analytical intermediate">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Completed • 82%</span>
+            <span class="badge badge-primary">Intermediate</span>
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">SQL & Data Analysis Benchmark</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.4;">
+            Evaluate complex relational queries, multi-table joins, CTE optimizations, and window function analytical tasks.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.8rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 25 minutes</span>
+            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> 6 Challenges</span>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+              <span>Score Achieved</span>
+              <span style="color: var(--accent-green); font-weight: 700;">82% Verified</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill green" style="width: 82%;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <span class="badge badge-purple">SQL</span>
+            <span class="badge badge-cyan">Analytics</span>
+            <span class="badge badge-primary">Database</span>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <a href="result.html" class="btn btn-secondary" style="flex: 1;">View Proof</a>
+            <a href="assessment-details.html" class="btn btn-secondary" style="flex: 1;">Retake</a>
+          </div>
+        </div>
+
+        <!-- Card 3: Problem Solving & Algorithmic Logic -->
+        <div class="card card-hover-glow assessment-card-item" data-title="Problem Solving & Algorithmic Logic" data-category="core cs" data-filters="technical advanced">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-cyan"><i class="fa-solid fa-star"></i> Recommended</span>
+            <span class="badge badge-purple">Advanced</span>
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Problem Solving & Logic</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.4;">
+            Rigorous algorithmic challenges testing time complexity, data structures, and edge-case boundary handling.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.8rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 35 minutes</span>
+            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> 5 Challenges</span>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+              <span>Status</span>
+              <span>Not Started</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <span class="badge badge-primary">Data Structures</span>
+            <span class="badge badge-purple">Logic</span>
+          </div>
+
+          <a href="assessment-details.html" class="btn btn-secondary" style="width: 100%;">
+            Start Assessment
+          </a>
+        </div>
+
+        <!-- Card 4: Real-time API & Backend Systems -->
+        <div class="card card-hover-glow assessment-card-item" data-title="Real-Time API & Backend Architecture" data-category="backend" data-filters="technical advanced">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-primary">Backend</span>
+            <span class="badge badge-purple">Advanced</span>
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Real-Time API Architecture</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.4;">
+            Assess asynchronous HTTP request routing, rate limiting algorithms, and payload validation routines.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.8rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 45 minutes</span>
+            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> 6 Challenges</span>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+              <span>Status</span>
+              <span>Not Started</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <span class="badge badge-cyan">REST APIs</span>
+            <span class="badge badge-primary">Async Python</span>
+          </div>
+
+          <a href="assessment-details.html" class="btn btn-secondary" style="width: 100%;">
+            Start Assessment
+          </a>
+        </div>
+
+        <!-- Card 5: Frontend UI/UX Practical Benchmark -->
+        <div class="card card-hover-glow assessment-card-item" data-title="Frontend UI/UX Practical Benchmark" data-category="frontend" data-filters="technical intermediate">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-cyan">Frontend</span>
+            <span class="badge badge-primary">Intermediate</span>
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Frontend UI/UX Practical</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.4;">
+            Build responsive dynamic layout components, manage DOM mutation events, and debug CSS grid rendering issues.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.8rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 25 minutes</span>
+            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> 6 Challenges</span>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+              <span>Status</span>
+              <span>Not Started</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <span class="badge badge-cyan">HTML/CSS</span>
+            <span class="badge badge-purple">DOM Logic</span>
+          </div>
+
+          <a href="assessment-details.html" class="btn btn-secondary" style="width: 100%;">
+            Start Assessment
+          </a>
+        </div>
+
+        <!-- Card 6: System Design & Database Scaling -->
+        <div class="card card-hover-glow assessment-card-item" data-title="System Design & Database Scaling" data-category="core cs" data-filters="technical advanced">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-purple">Architecture</span>
+            <span class="badge badge-amber">Expert</span>
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">System Architecture & Scaling</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.4;">
+            Design distributed database schemas, caching layers, and throughput bottleneck resolution strategies.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.8rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 50 minutes</span>
+            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> 4 Challenges</span>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+              <span>Status</span>
+              <span>Not Started</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <span class="badge badge-purple">System Design</span>
+            <span class="badge badge-cyan">Caching</span>
+          </div>
+
+          <a href="assessment-details.html" class="btn btn-secondary" style="width: 100%;">
+            Start Assessment
+          </a>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div><strong>SkillSync</strong> — Practical Skill Evaluation Platform</div>
+        <div style="display: flex; gap: 1.5rem; font-size: 0.85rem;">
+          <a href="index.html">Dashboard</a>
+          <a href="passport.html">Proof of Skill</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

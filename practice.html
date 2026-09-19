@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommended Practice — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link active"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="user-profile">
+            <div class="avatar">MS</div>
+            <div class="user-info">
+              <span class="user-name">Muskaan 👋</span>
+              <span class="user-role">Candidate View</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <div class="page-header">
+        <h1 class="page-title"><i class="fa-solid fa-fire" style="color: var(--accent-amber);"></i> Personalized Practice Challenges</h1>
+        <p class="page-subtitle">Targeted interactive micro-challenges specifically curated to close your verified skill gaps.</p>
+      </div>
+
+      <!-- Practice Cards Grid -->
+      <div class="grid-2" id="practiceGrid">
+
+        <!-- Practice 1: Debug a Data Processing Pipeline -->
+        <div class="card card-hover-glow" style="border-left: 4px solid #f43f5e;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-amber"><i class="fa-solid fa-bolt"></i> Recommended Priority</span>
+            <span class="badge badge-green">+5% Debugging Competency</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Debug a Data Processing Pipeline</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.5;">
+            Identify and fix memory leaks and unhandled null values in an ETL batch transformation script.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.82rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 20 mins</span>
+            <span><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> Intermediate</span>
+            <span><i class="fa-solid fa-bug" style="color: #f43f5e;"></i> Skill: Debugging</span>
+          </div>
+
+          <a href="assessment.html" class="btn btn-primary" style="width: 100%;">
+            <i class="fa-solid fa-play"></i> Start Practice Scenario
+          </a>
+        </div>
+
+        <!-- Practice 2: Build a SQL Analytics Query -->
+        <div class="card card-hover-glow" style="border-left: 4px solid var(--accent-purple);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-purple">SQL Analytics</span>
+            <span class="badge badge-green">+8% SQL Competency</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Build a SQL Analytics Query</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.5;">
+            Construct multi-table joins, subqueries, and window functions to calculate monthly user retention cohorts.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.82rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 25 mins</span>
+            <span><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> Advanced</span>
+            <span><i class="fa-solid fa-database" style="color: var(--accent-purple);"></i> Skill: SQL</span>
+          </div>
+
+          <a href="assessment.html" class="btn btn-secondary" style="width: 100%;">
+            <i class="fa-solid fa-play"></i> Start Practice Scenario
+          </a>
+        </div>
+
+        <!-- Practice 3: Analyze Customer Transactions -->
+        <div class="card card-hover-glow" style="border-left: 4px solid var(--accent-cyan);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-cyan">Data Analysis</span>
+            <span class="badge badge-green">+4% Data Analysis</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Analyze Customer Transactions</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.5;">
+            Parse transaction CSV streams in Python to detect fraudulent spending anomalies and outlier distributions.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.82rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 30 mins</span>
+            <span><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> Intermediate</span>
+            <span><i class="fa-solid fa-chart-simple" style="color: var(--accent-cyan);"></i> Skill: Analytics</span>
+          </div>
+
+          <a href="assessment.html" class="btn btn-secondary" style="width: 100%;">
+            <i class="fa-solid fa-play"></i> Start Practice Scenario
+          </a>
+        </div>
+
+        <!-- Practice 4: Fix a Python API Bug -->
+        <div class="card card-hover-glow" style="border-left: 4px solid var(--primary);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+            <span class="badge badge-primary">API Debugging</span>
+            <span class="badge badge-green">+6% Debugging & Python</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Fix a Python API Bug</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.5;">
+            Resolve intermittent HTTP 500 error responses caused by missing dictionary keys in JSON request payloads.
+          </p>
+
+          <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.82rem; color: var(--text-muted);">
+            <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> 15 mins</span>
+            <span><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> Intermediate</span>
+            <span><i class="fa-solid fa-code" style="color: var(--primary);"></i> Skill: Python</span>
+          </div>
+
+          <a href="assessment.html" class="btn btn-secondary" style="width: 100%;">
+            <i class="fa-solid fa-play"></i> Start Practice Scenario
+          </a>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong>SkillSync</strong> — Recommended Skill Practice Engine</div>
+        <div><a href="index.html">Back to Dashboard</a></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

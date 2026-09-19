@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assessment History — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link active"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="user-profile">
+            <div class="avatar">MS</div>
+            <div class="user-info">
+              <span class="user-name">Muskaan 👋</span>
+              <span class="user-role">Candidate View</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <div class="page-header">
+        <h1 class="page-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i> Assessment History</h1>
+        <p class="page-subtitle">Track your past practical simulation evaluations, historical competency scores, and progress trends over time.</p>
+      </div>
+
+      <!-- Trend Chart Banner -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">
+          <i class="fa-solid fa-chart-area" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i> Score Progression Over Time
+        </h3>
+        <div style="height: 220px; position: relative;">
+          <canvas id="historyTrendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- History Data Table -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Assessment Title</th>
+                <th>Category</th>
+                <th>Completion Date</th>
+                <th>Score</th>
+                <th>Competency Level</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="font-weight: 700; color: var(--text-main);">Python Practical Competency</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">8 Challenges • 22 mins</div>
+                </td>
+                <td><span class="badge badge-primary">Programming</span></td>
+                <td>Sep 07, 2026</td>
+                <td><span class="badge badge-green" style="font-weight: 700;">84% Verified</span></td>
+                <td>Intermediate</td>
+                <td>
+                  <a href="result.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-contract"></i> View AI Report</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div style="font-weight: 700; color: var(--text-main);">SQL & Data Analysis Benchmark</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">6 Challenges • 19 mins</div>
+                </td>
+                <td><span class="badge badge-purple">Data & SQL</span></td>
+                <td>Aug 29, 2026</td>
+                <td><span class="badge badge-green" style="font-weight: 700;">82% Verified</span></td>
+                <td>Intermediate</td>
+                <td>
+                  <a href="result.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-contract"></i> View AI Report</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div style="font-weight: 700; color: var(--text-main);">Problem Solving & Algorithmic Logic</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">5 Challenges • 28 mins</div>
+                </td>
+                <td><span class="badge badge-cyan">Core CS</span></td>
+                <td>Aug 14, 2026</td>
+                <td><span class="badge badge-green" style="font-weight: 700;">91% Verified</span></td>
+                <td>Advanced</td>
+                <td>
+                  <a href="result.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-contract"></i> View AI Report</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div style="font-weight: 700; color: var(--text-main);">Technical Communication & Code Documentation</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">4 Scenarios • 15 mins</div>
+                </td>
+                <td><span class="badge badge-primary">Soft Skills</span></td>
+                <td>Jul 28, 2026</td>
+                <td><span class="badge badge-amber" style="font-weight: 700;">76% Verified</span></td>
+                <td>Intermediate</td>
+                <td>
+                  <a href="result.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-contract"></i> View AI Report</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong>SkillSync</strong> — Assessment History Audit Log</div>
+        <div><a href="index.html">Back to Dashboard</a></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

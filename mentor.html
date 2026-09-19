@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini AI Mentor — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link active"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="role-switcher">
+            <button class="role-btn active" id="role-candidate">Candidate</button>
+            <button class="role-btn" id="role-recruiter">Recruiter</button>
+          </div>
+          <div class="user-profile">
+            <div class="avatar">MS</div>
+            <div class="user-info">
+              <span class="user-name">Muskaan 👋</span>
+              <span class="user-role">Intermediate Level</span>
+            </div>
+          </div>
+          <button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <!-- Header Banner -->
+      <div class="page-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge badge-cyan" style="margin-bottom: 0.5rem;">
+              <i class="fa-solid fa-sparkles"></i> Context-Aware Gemini AI Integration
+            </span>
+            <h1 class="page-title"><i class="fa-solid fa-robot" style="color: var(--accent-cyan);"></i> Gemini AI Mentor</h1>
+            <p class="page-subtitle">Get personalized guidance based on your verified competency evidence and target role benchmarks.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
+              <a href="skill-gap.html" class="btn btn-secondary"><i class="fa-solid fa-chart-line"></i> View Skill Gap</a>
+              <a href="career-recommendation.html" class="btn btn-primary"><i class="fa-solid fa-compass"></i> Career Recommendation</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout Grid -->
+      <div class="grid-dashboard">
+        
+        <!-- Left Column: Candidate Context Profile Summary -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Verified Competency Profile Card -->
+          <div class="card" style="border-top: 3px solid var(--primary);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700;">
+                <i class="fa-solid fa-user-check" style="color: var(--primary); margin-right: 0.5rem;"></i> Active Candidate Context
+              </h3>
+              <span class="badge badge-primary" id="contextOverallBadge">Overall: 84%</span>
+            </div>
+
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              The AI Mentor uses your live competency vector to answer questions without guessing:
+            </div>
+
+            <!-- Context Details Grid -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.88rem;">
+                <span style="color: var(--text-dim);">Target Role:</span>
+                <span style="font-weight: 700; color: var(--accent-cyan);" id="contextTargetRole">Java Developer</span>
+              </div>
+
+              <div style="height: 1px; background: var(--border-color); margin: 0.25rem 0;"></div>
+
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">
+                Demonstrated Skill Breakdown:
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;" id="contextSkillList">
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                  <span><i class="fa-brands fa-java" style="color: #f87171; margin-right: 0.3rem;"></i> Java Practical</span>
+                  <span style="font-weight: 600; color: var(--text-main);">76%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                  <span><i class="fa-solid fa-bug" style="color: #f43f5e; margin-right: 0.3rem;"></i> Debugging & Optimization</span>
+                  <span style="font-weight: 600; color: var(--accent-amber);">65%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                  <span><i class="fa-solid fa-database" style="color: #a78bfa; margin-right: 0.3rem;"></i> SQL & Data</span>
+                  <span style="font-weight: 600; color: var(--accent-cyan);">81%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                  <span><i class="fa-solid fa-lightbulb" style="color: #fde047; margin-right: 0.3rem;"></i> Problem Solving</span>
+                  <span style="font-weight: 600; color: var(--accent-green);">79%</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem; text-align: center;">
+              <span style="font-size: 0.75rem; color: var(--text-dim);">
+                <i class="fa-solid fa-lock" style="color: var(--accent-green);"></i> Secure backend processing — API key is never exposed.
+              </span>
+            </div>
+          </div>
+
+          <!-- AI Mentor Behavior Callout -->
+          <div class="card" style="background: rgba(17, 24, 39, 0.8); border-color: rgba(99, 102, 241, 0.3);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+              <i class="fa-solid fa-shield-halved" style="color: var(--primary); font-size: 1.1rem;"></i>
+              <h4 style="font-size: 0.92rem; font-weight: 700;">Competency Alignment Guardrails</h4>
+            </div>
+            <ul style="font-size: 0.8rem; color: var(--text-muted); padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem;">
+              <li>Evaluates real score deltas vs target benchmarks.</li>
+              <li>Recommends practical exercises over generic courses.</li>
+              <li>Explains skill gaps constructively without fake claims.</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Interactive AI Mentor Chat Box -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <div class="card" style="display: flex; flex-direction: column; min-height: 540px;">
+            
+            <!-- Chat Card Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.25rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--primary), var(--accent-cyan)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem;">
+                  <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                  <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">AI Mentor Dialogue</h3>
+                  <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green); display: inline-block;"></span>
+                    FastAPI + Gemini 2.5 Active
+                  </div>
+                </div>
+              </div>
+              <button id="clearChatBtn" class="btn btn-secondary btn-sm" title="Clear conversation">
+                <i class="fa-solid fa-rotate-right"></i> Reset
+              </button>
+            </div>
+
+            <!-- Suggested Questions Container -->
+            <div style="margin-bottom: 1.25rem;">
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">
+                <i class="fa-solid fa-lightbulb" style="color: var(--accent-amber);"></i> Click a suggested question:
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="suggestedQuestionsContainer">
+                <button class="badge badge-primary suggestion-pill" data-question="Why is my debugging score low?">
+                  "Why is my debugging score low?"
+                </button>
+                <button class="badge badge-cyan suggestion-pill" data-question="What should I improve to become a Java Developer?">
+                  "What should I improve to become a Java Developer?"
+                </button>
+                <button class="badge badge-purple suggestion-pill" data-question="What should I practice next?">
+                  "What should I practice next?"
+                </button>
+                <button class="badge badge-amber suggestion-pill" data-question="Why did I receive this competency score?">
+                  "Why did I receive this competency score?"
+                </button>
+                <button class="badge badge-rose suggestion-pill" data-question="Which skill is currently my biggest gap?">
+                  "Which skill is currently my biggest gap?"
+                </button>
+                <button class="badge badge-green suggestion-pill" data-question="Am I ready for a Java Developer role?">
+                  "Am I ready for a Java Developer role?"
+                </button>
+              </div>
+            </div>
+
+            <!-- Response / Output Container -->
+            <div id="mentorOutputArea" style="flex: 1; background: rgba(9, 13, 22, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem; overflow-y: auto; max-height: 380px; min-height: 200px; display: flex; flex-direction: column;">
+              
+              <!-- Empty Initial State -->
+              <div id="mentorEmptyState" style="text-align: center; margin: auto; padding: 2rem 1rem;">
+                <div style="font-size: 2.5rem; color: var(--text-dim); margin-bottom: 0.75rem;">
+                  <i class="fa-solid fa-comments"></i>
+                </div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">
+                  Ask the AI Mentor anything about your competency
+                </h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 460px; margin: 0 auto;">
+                  Type your question below or click any suggested prompt above to analyze your score breakdown and receive evidence-based guidance.
+                </p>
+              </div>
+
+              <!-- Loading Indicator -->
+              <div id="mentorLoadingState" style="display: none; text-align: center; margin: auto; padding: 2rem 1rem;">
+                <div style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;">
+                  <i class="fa-solid fa-circle-notch fa-spin"></i>
+                </div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">
+                  Analyzing Competency Vector & Querying Gemini...
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">
+                  Synthesizing score deltas and target benchmarks
+                </div>
+              </div>
+
+              <!-- Real Response Output Box -->
+              <div id="mentorResponseBox" style="display: none;">
+                <div style="display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; background: rgba(99, 102, 241, 0.1); padding: 0.85rem 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                  <i class="fa-solid fa-user" style="color: var(--primary); margin-top: 0.2rem;"></i>
+                  <div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Your Question</div>
+                    <div id="userQuestionText" style="font-size: 0.92rem; font-weight: 600; color: var(--text-main); margin-top: 0.15rem;"></div>
+                  </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 0.75rem; background: rgba(17, 24, 39, 0.9); padding: 1.1rem; border-radius: var(--radius-md); border: 1px solid var(--border-highlight);">
+                  <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--accent-cyan); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
+                    <i class="fa-solid fa-robot"></i>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 0.4rem;">
+                      Gemini AI Mentor Analysis
+                    </div>
+                    <div id="aiAnswerContent" style="font-size: 0.9rem; color: #e2e8f0; line-height: 1.65; white-space: pre-wrap;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Error State Box -->
+              <div id="mentorErrorState" style="display: none; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-md); padding: 1.25rem; color: #fca5a5;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <span>Unable to Reach AI Mentor API</span>
+                </div>
+                <div id="errorMessageText" style="font-size: 0.85rem; line-height: 1.5; color: #fecdd3;"></div>
+                <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid rgba(244, 63, 94, 0.2); font-size: 0.78rem; color: var(--text-muted);">
+                  <strong>Troubleshooting:</strong> Ensure FastAPI is running (`python -m uvicorn main:app --reload` in `backend/`) and `GEMINI_API_KEY` is added to `backend/.env`.
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Input Controls Area -->
+            <form id="mentorForm" style="display: flex; gap: 0.75rem; align-items: center;">
+              <div style="position: relative; flex: 1;">
+                <input 
+                  type="text" 
+                  id="mentorQuestionInput" 
+                  placeholder="Ask why a score is low or what to improve next..." 
+                  style="width: 100%; padding: 0.85rem 1rem; background: var(--bg-card-light); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.9rem; transition: var(--transition);"
+                  autocomplete="off"
+                />
+              </div>
+              <button type="submit" id="sendMentorBtn" class="btn btn-primary" style="padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                <span>Send</span>
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <strong>SkillSync</strong> — AI Mentor & Competency Intelligence
+        </div>
+        <div style="display: flex; gap: 1.5rem; font-size: 0.85rem;">
+          <a href="index.html">Dashboard</a>
+          <a href="skill-gap.html">Skill Gap</a>
+          <a href="practice.html">Practice</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

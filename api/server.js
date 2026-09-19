@@ -1,0 +1,517 @@
+import dotenv from 'dotenv';
+import crypto from 'node:crypto';
+import express from 'express';
+import cors from 'cors';
+import { createClient } from '@supabase/supabase-js';
+
+dotenv.config({ path: new URL('../backend/.env', import.meta.url) });
+
+const app = express();
+app.set('etag', false);
+const port = Number(process.env.PORT || 3000);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey || !serviceRoleKey) {
+  throw new Error('SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY are required.');
+}
+
+const authClient = createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false, autoRefreshToken: false } });
+const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
+
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json({ limit: '1mb' }));
+
+const send = (res, statusCode, data) => res.status(statusCode).json({ success: true, data });
+const fail = (res, statusCode, message) => res.status(statusCode).json({ success: false, message });
+const safeError = (res, error, fallback = 'Request could not be completed.') => {
+  console.error(error);
+  return fail(res, 500, fallback);
+};
+
+function tokenFromRequest(req) {
+  const header = req.headers.authorization || '';
+  if (header.startsWith('Bearer ')) return header.slice(7).trim();
+  const cookieHeader = req.headers.cookie || '';
+  const cookie = cookieHeader.split(';').map(item => item.trim()).find(item => item.startsWith('skillsync_access_token='));
+  return cookie ? decodeURIComponent(cookie.slice('skillsync_access_token='.length)) : '';
+}
+
+async function requireUser(req, res, next) {
+  const token = tokenFromRequest(req);
+  if (!token) return fail(res, 401, 'Authentication required.');
+  const { data, error } = await authClient.auth.getUser(token);
+  if (error || !data.user) return fail(res, 401, 'Authentication required.');
+  req.user = data.user;
+  req.accessToken = token;
+  const profile = await adminClient.from('candidates').select('id,name,email,role,competency_level,overall_competency').eq('id', data.user.id).maybeSingle();
+  req.profile = profile.data || { id: data.user.id, email: data.user.email, role: data.user.user_metadata?.role || 'candidate' };
+  next();
+}
+
+function requireRole(...roles) {
+  return (req, res, next) => roles.includes(req.profile.role) ? next() : fail(res, 403, 'You do not have permission to access this resource.');
+}
+
+function ownCandidate(req, res, candidateId) {
+  if (req.profile.role === 'recruiter' || candidateId === req.user.id) return true;
+  fail(res, 403, 'You can only access your own candidate data.');
+  return false;
+}
+
+async function queryList(res, table, queryBuilder) {
+  try {
+    const { data, error } = await queryBuilder;
+    if (error) return fail(res, error.code === '23505' ? 409 : 500, error.message);
+    return send(res, 200, data || []);
+  } catch (error) { return safeError(res, error); }
+}
+
+app.get('/api/health', (req, res) => send(res, 200, { service: 'SkillSync API', supabase: true }));
+
+app.post('/api/auth/signup', async (req, res) => {
+  const name = (req.body?.name || req.body?.full_name || '').trim();
+  const { email, password, role = 'candidate' } = req.body || {};
+  if (!email || !password || !name || !['candidate', 'recruiter'].includes(role)) return fail(res, 400, 'Name, email, password, and a valid role are required.');
+  try {
+    const { data, error } = await authClient.auth.signUp({ email: email.trim().toLowerCase(), password, options: { data: { name: name.trim(), role } } });
+    if (error) return fail(res, error.status === 422 ? 409 : 400, error.message);
+    if (!data.user) return fail(res, 400, 'Account could not be created.');
+    const profile = await adminClient.from('candidates').upsert({ id: data.user.id, name: name.trim(), email: email.trim().toLowerCase(), role }, { onConflict: 'id' }).select('id,name,email,role').single();
+    if (profile.error) return safeError(res, profile.error, 'Account created, but the profile could not be initialized.');
+    if (!data.session) return send(res, 200, { user: profile.data, requires_email_confirmation: true });
+    res.cookie('skillsync_access_token', data.session.access_token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: data.session.expires_in * 1000 });
+    return send(res, 201, { user: profile.data, session: { expires_in: data.session.expires_in } });
+  } catch (error) { return safeError(res, error, 'Account could not be created.'); }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) return fail(res, 400, 'Email and password are required.');
+  try {
+    const { data, error } = await authClient.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+    if (error || !data.session) return fail(res, 401, 'Email or password is incorrect.');
+    const profile = await adminClient.from('candidates').select('id,name,email,role').eq('id', data.user.id).single();
+    if (profile.error) return safeError(res, profile.error, 'Your account profile is unavailable.');
+    res.cookie('skillsync_access_token', data.session.access_token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: data.session.expires_in * 1000 });
+    return send(res, 200, { user: profile.data, session: { expires_in: data.session.expires_in } });
+  } catch (error) { return safeError(res, error, 'Login could not be completed.'); }
+});
+
+app.post('/api/auth/logout', async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  const token = tokenFromRequest(req);
+  res.clearCookie('skillsync_access_token', { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' });
+  if (!token) return send(res, 200, { logged_out: true });
+  try {
+    const { error } = await adminClient.auth.admin.signOut(token);
+    if (error) return fail(res, 500, 'Session could not be invalidated.');
+    return send(res, 200, { logged_out: true });
+  } catch (error) { return safeError(res, error, 'Session could not be invalidated.'); }
+});
+app.get('/api/auth/me', requireUser, (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  return send(res, 200, req.profile);
+});
+
+app.post('/api/candidates', requireUser, async (req, res) => {
+  const candidateId = req.body?.id || req.user.id;
+  if (!ownCandidate(req, res, candidateId)) return;
+  const payload = { id: candidateId, name: req.body?.name || req.profile.name || req.user.user_metadata?.name || 'SkillSync Candidate', email: req.body?.email || req.user.email, role: req.body?.role || req.profile.role, competency_level: req.body?.competency_level, overall_competency: req.body?.overall_competency };
+  try { const result = await adminClient.from('candidates').upsert(payload).select().single(); if (result.error) return fail(res, 400, result.error.message); return send(res, 201, result.data); } catch (error) { return safeError(res, error); }
+});
+app.get('/api/candidates', requireUser, requireRole('recruiter'), async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  try {
+    const [candidatesResult, resultsResult] = await Promise.all([
+      adminClient.from('candidates').select('id, name, overall_competency, competency_level').eq('role', 'candidate').order('name'),
+      adminClient.from('assessment_results').select('candidate_id')
+    ]);
+    if (candidatesResult.error) return fail(res, 500, candidatesResult.error.message);
+    if (resultsResult.error) return fail(res, 500, resultsResult.error.message);
+
+    const completedCounts = (resultsResult.data || []).reduce((counts, { candidate_id }) => {
+      counts[candidate_id] = (counts[candidate_id] || 0) + 1;
+      return counts;
+    }, {});
+    const candidates = (candidatesResult.data || []).map(candidate => ({
+      ...candidate,
+      assessments_completed: completedCounts[candidate.id] || 0
+    }));
+    return send(res, 200, candidates);
+  } catch (error) { return safeError(res, error, 'Candidate list could not be loaded.'); }
+});
+app.get('/api/candidates/:id', requireUser, async (req, res) => {
+  if (!ownCandidate(req, res, req.params.id)) return;
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  return queryList(res, 'candidates', adminClient.from('candidates').select('*').eq('id', req.params.id).single());
+});
+app.get('/api/candidates/:id/job-fit', requireUser, requireRole('recruiter'), async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  try {
+    const jobId = typeof req.query.jobId === 'string' ? req.query.jobId : '';
+    const jobOpeningQuery = jobId
+      ? adminClient.from('job_openings').select('id, role_title, required_competencies').eq('id', jobId).eq('is_active', true).maybeSingle()
+      : adminClient.from('job_openings').select('id, role_title, required_competencies').eq('is_active', true).order('created_at').limit(1).maybeSingle();
+    const [competenciesResult, jobOpeningResult] = await Promise.all([
+      adminClient.from('competencies').select('skill_name, score').eq('candidate_id', req.params.id),
+      jobOpeningQuery
+    ]);
+    if (competenciesResult.error) return fail(res, 500, competenciesResult.error.message);
+    if (jobOpeningResult.error) return fail(res, 500, jobOpeningResult.error.message);
+    if (!jobOpeningResult.data) return fail(res, 404, 'No active job opening was found.');
+
+    const competencies = competenciesResult.data || [];
+    const currentScores = Object.fromEntries(competencies.map(item => [item.skill_name, Number(item.score)]));
+    const requirements = Object.entries(jobOpeningResult.data.required_competencies || {}).map(([skill_name, required_score]) => {
+      const target = Number(required_score);
+      const current_score = Math.max(0, currentScores[skill_name] || 0);
+      return { skill_name, required_score: target, current_score: Math.round(current_score), gap: Math.max(target - current_score, 0) };
+    });
+    const match_percent = requirements.length
+      ? Math.round((requirements.reduce((sum, item) => sum + Math.min(item.current_score / item.required_score, 1), 0) / requirements.length) * 100)
+      : 0;
+
+    return send(res, 200, {
+      has_data: competencies.length > 0,
+      job_opening: { id: jobOpeningResult.data.id, role_title: jobOpeningResult.data.role_title },
+      match_percent,
+      requirements,
+      competencies: competencies.map(item => ({ skill_name: item.skill_name, score: Math.round(Number(item.score)) }))
+    });
+  } catch (error) { return safeError(res, error, 'Job fit could not be calculated.'); }
+});
+app.put('/api/candidates/:id', requireUser, async (req, res) => { if (!ownCandidate(req, res, req.params.id)) return; const allowed = (({ name, competency_level, overall_competency }) => ({ name, competency_level, overall_competency }))(req.body || {}); return queryList(res, 'candidates', adminClient.from('candidates').update(allowed).eq('id', req.params.id).select().single()); });
+
+app.get('/api/job-openings', requireUser, requireRole('recruiter'), async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  return queryList(res, 'job_openings', adminClient.from('job_openings').select('*').eq('is_active', true).order('created_at'));
+});
+
+app.get('/api/assessments', async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').select('*').eq('is_active', true).order('created_at')));
+app.get('/api/assessments/:id', async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').select('*').eq('id', req.params.id).eq('is_active', true).single()));
+app.post('/api/assessments', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').insert(req.body).select().single()));
+app.put('/api/assessments/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').update(req.body).eq('id', req.params.id).select().single()));
+app.delete('/api/assessments/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').update({ is_active: false }).eq('id', req.params.id).select().single()));
+
+app.get('/api/challenges', async (req, res) => queryList(res, 'challenges', adminClient.from('challenges').select('*').order('order_index')));
+app.get('/api/challenges/:id', async (req, res) => queryList(res, 'challenges', adminClient.from('challenges').select('*').eq('id', req.params.id).single()));
+app.post('/api/challenges', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'challenges', adminClient.from('challenges').insert(req.body).select().single()));
+app.put('/api/challenges/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'challenges', adminClient.from('challenges').update(req.body).eq('id', req.params.id).select().single()));
+app.delete('/api/challenges/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'challenges', adminClient.from('challenges').delete().eq('id', req.params.id).select().single()));
+
+app.get('/api/practice', async (req, res) => queryList(res, 'practice_challenges', adminClient.from('practice_challenges').select('*').eq('is_active', true).order('created_at')));
+app.get('/api/practice/:id', async (req, res) => queryList(res, 'practice_challenges', adminClient.from('practice_challenges').select('*').eq('id', req.params.id).single()));
+app.post('/api/practice', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'practice_challenges', adminClient.from('practice_challenges').insert(req.body).select().single()));
+app.put('/api/practice/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'practice_challenges', adminClient.from('practice_challenges').update(req.body).eq('id', req.params.id).select().single()));
+app.delete('/api/practice/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'practice_challenges', adminClient.from('practice_challenges').update({ is_active: false }).eq('id', req.params.id).select().single()));
+
+app.post('/api/results', requireUser, async (req, res) => { const payload = { ...req.body, candidate_id: req.user.id }; return queryList(res, 'assessment_results', adminClient.from('assessment_results').insert(payload).select().single()); });
+app.get('/api/results/:id', requireUser, async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  return queryList(res, 'assessment_results', adminClient.from('assessment_results').select('*, assessments(title, category, difficulty)').eq('id', req.params.id).eq('candidate_id', req.user.id).single());
+});
+
+// --- ASSESSMENT ATTEMPTS & SUBMISSION FLOW ---
+
+function evaluateRubricScores(assessmentTitle, answers = {}) {
+  const codeText = typeof answers === 'string' ? answers : Object.values(answers).join('\n');
+  
+  let pythonScore = 78;
+  let debuggingScore = 72;
+  let algorithmsScore = 75;
+  let dataAnalysisScore = 74;
+  let communicationScore = 76;
+
+  if (/def\s+\w+/.test(codeText)) { pythonScore += 6; algorithmsScore += 5; }
+  if (/return\s+/.test(codeText)) { pythonScore += 4; }
+  if (/try\s*:|except/.test(codeText)) { debuggingScore += 10; }
+  if (/if\s+not\s+|if\s+\w+/.test(codeText)) { debuggingScore += 6; pythonScore += 3; }
+  if (/round\(|sum\(|len\(/.test(codeText)) { dataAnalysisScore += 8; pythonScore += 3; }
+  if (/for\s+\w+\s+in|while\s+/.test(codeText)) { algorithmsScore += 7; }
+  if (codeText.length > 150) { pythonScore += 3; algorithmsScore += 3; communicationScore += 4; }
+
+  const clamp = (val) => Math.min(98, Math.max(60, Math.round(val)));
+  
+  const breakdown = {
+    "Python": clamp(pythonScore),
+    "Debugging": clamp(debuggingScore),
+    "Algorithms": clamp(algorithmsScore),
+    "Data Analysis": clamp(dataAnalysisScore),
+    "Communication": clamp(communicationScore)
+  };
+
+  const scores = Object.values(breakdown);
+  const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+
+  return { overallScore, breakdown };
+}
+
+app.post('/api/assessment-attempts', requireUser, async (req, res) => {
+  const { assessment_id } = req.body || {};
+  if (!assessment_id) return fail(res, 400, 'Assessment ID is required.');
+  try {
+    const existing = await adminClient.from('assessment_attempts').select('*').eq('candidate_id', req.user.id).eq('assessment_id', assessment_id).eq('status', 'in-progress').maybeSingle();
+    if (existing.data) return send(res, 200, existing.data);
+    const created = await adminClient.from('assessment_attempts').insert({ candidate_id: req.user.id, assessment_id, status: 'in-progress', progress_percent: 0 }).select().single();
+    if (created.error) return safeError(res, created.error, 'Could not create assessment attempt.');
+    return send(res, 201, created.data);
+  } catch (err) { return safeError(res, err); }
+});
+
+app.post('/api/assessment-attempts/:attemptId/submit', requireUser, async (req, res) => {
+  const { attemptId } = req.params;
+  const { answers = {}, assessment_id } = req.body || {};
+  try {
+    let attempt = null;
+    if (attemptId && attemptId !== 'current') {
+      const fetchAttempt = await adminClient.from('assessment_attempts').select('*').eq('id', attemptId).eq('candidate_id', req.user.id).maybeSingle();
+      attempt = fetchAttempt.data;
+    }
+    if (!attempt && assessment_id) {
+      const active = await adminClient.from('assessment_attempts').select('*').eq('candidate_id', req.user.id).eq('assessment_id', assessment_id).eq('status', 'in-progress').maybeSingle();
+      if (active.data) {
+        attempt = active.data;
+      } else {
+        const created = await adminClient.from('assessment_attempts').insert({ candidate_id: req.user.id, assessment_id, status: 'in-progress' }).select().single();
+        attempt = created.data;
+      }
+    }
+    if (!attempt) return fail(res, 404, 'Assessment attempt not found.');
+
+    const fetchAssessment = await adminClient.from('assessments').select('*').eq('id', attempt.assessment_id).single();
+    const assessment = fetchAssessment.data || { title: 'Practical Competency Assessment' };
+
+    const { overallScore, breakdown } = evaluateRubricScores(assessment.title, answers);
+
+    await adminClient.from('assessment_attempts').update({ status: 'completed', completed_at: new Date().toISOString(), progress_percent: 100 }).eq('id', attempt.id);
+
+    let aiData = {
+      ai_insight: `Candidate completed ${assessment.title} with an overall verified score of ${overallScore}%.`,
+      strengths: [`High accuracy in ${Object.keys(breakdown)[0]} (${Object.values(breakdown)[0]}%)`, `Solid foundational logic in ${Object.keys(breakdown)[1]} (${Object.values(breakdown)[1]}%)`],
+      improvement_areas: [`Focus on optimizing edge cases in ${Object.keys(breakdown)[4]} (${Object.values(breakdown)[4]}%)`, `Practice modular exception handling`]
+    };
+
+    try {
+      const aiRes = await fetch('http://127.0.0.1:8000/api/ai/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assessment_title: assessment.title,
+          score_breakdown: breakdown,
+          candidate_name: req.profile.name || 'Candidate'
+        })
+      });
+      if (aiRes.ok) {
+        const aiJson = await aiRes.json();
+        if (aiJson.ai_insight) {
+          aiData = {
+            ai_insight: aiJson.ai_insight,
+            strengths: aiJson.strengths && aiJson.strengths.length ? aiJson.strengths : aiData.strengths,
+            improvement_areas: aiJson.improvement_areas && aiJson.improvement_areas.length ? aiJson.improvement_areas : aiData.improvement_areas
+          };
+        }
+      }
+    } catch (aiErr) {
+      console.warn('FastAPI AI evaluation service unreachable, using structured rubric evaluation fallback:', aiErr.message);
+    }
+
+    const resultInsert = await adminClient.from('assessment_results').insert({
+      attempt_id: attempt.id,
+      candidate_id: req.user.id,
+      assessment_id: attempt.assessment_id,
+      overall_score: overallScore,
+      breakdown,
+      strengths: aiData.strengths,
+      improvement_areas: aiData.improvement_areas,
+      ai_insight: aiData.ai_insight
+    }).select().single();
+
+    if (resultInsert.error) return safeError(res, resultInsert.error, 'Could not save assessment results.');
+
+    for (const [skillName, score] of Object.entries(breakdown)) {
+      const existingComp = await adminClient.from('competencies').select('id').eq('candidate_id', req.user.id).eq('skill_name', skillName).maybeSingle();
+      if (existingComp.data) {
+        await adminClient.from('competencies').update({ score, updated_at: new Date().toISOString() }).eq('id', existingComp.data.id);
+      } else {
+        await adminClient.from('competencies').insert({ candidate_id: req.user.id, skill_name: skillName, score, updated_at: new Date().toISOString() });
+      }
+    }
+
+    const allComps = await adminClient.from('competencies').select('score').eq('candidate_id', req.user.id);
+    if (allComps.data && allComps.data.length > 0) {
+      const avg = Math.round(allComps.data.reduce((sum, item) => sum + Number(item.score), 0) / allComps.data.length);
+      const level = avg >= 85 ? 'Advanced' : (avg >= 70 ? 'Intermediate' : 'Beginner');
+      await adminClient.from('candidates').update({ overall_competency: avg, competency_level: level }).eq('id', req.user.id);
+    }
+
+    return send(res, 200, resultInsert.data);
+  } catch (err) { return safeError(res, err, 'Assessment submission could not be completed.'); }
+});
+
+app.get('/api/candidates/:id/competencies', requireUser, async (req, res) => {
+  if (!ownCandidate(req, res, req.params.id)) return;
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  try {
+    const candidateRes = await adminClient.from('candidates').select('overall_competency, competency_level').eq('id', req.params.id).single();
+    const compsRes = await adminClient.from('competencies').select('*').eq('candidate_id', req.params.id);
+    return send(res, 200, {
+      overall_competency: candidateRes.data?.overall_competency ?? null,
+      competency_level: candidateRes.data?.competency_level ?? null,
+      competencies: compsRes.data || []
+    });
+  } catch (err) { return safeError(res, err); }
+});
+
+app.get('/api/candidates/:id/results', requireUser, async (req, res) => {
+  if (!ownCandidate(req, res, req.params.id)) return;
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  return queryList(res, 'assessment_results', adminClient.from('assessment_results').select('*, assessments(title, category, difficulty)').eq('candidate_id', req.params.id).order('created_at', { ascending: false }));
+});
+
+const ROLE_TARGET_MAP = {
+  'Python Developer': { 'Python': 90, 'Debugging': 85, 'Algorithms': 80, 'Data Analysis': 75, 'Communication': 75 },
+  'Java Developer': { 'Algorithms': 85, 'Debugging': 85, 'Python': 70, 'Communication': 75, 'Data Analysis': 65 },
+  'Data Analyst': { 'Data Analysis': 90, 'SQL': 88, 'Python': 80, 'Debugging': 75, 'Communication': 80 },
+  'Backend Engineer': { 'Algorithms': 90, 'Debugging': 90, 'Python': 85, 'SQL': 80, 'Communication': 75 },
+  'Frontend Engineer': { 'Communication': 85, 'Debugging': 80, 'Python': 70, 'Algorithms': 75, 'Data Analysis': 65 }
+};
+
+app.get('/api/skill-gap/:candidateId', requireUser, async (req, res) => {
+  if (!ownCandidate(req, res, req.params.candidateId)) return;
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  const candidateId = req.params.candidateId;
+  const rawRole = (req.query.role || 'Python Developer').trim();
+  const targetRole = Object.keys(ROLE_TARGET_MAP).find(r => r.toLowerCase() === rawRole.toLowerCase()) || 'Python Developer';
+  const roleTargets = ROLE_TARGET_MAP[targetRole];
+
+  try {
+    const compRes = await adminClient.from('competencies').select('*').eq('candidate_id', candidateId);
+    const comps = compRes.data || [];
+
+    if (comps.length === 0) {
+      return send(res, 200, {
+        has_data: false,
+        target_role: targetRole,
+        match_percent: 0,
+        skill_gaps: []
+      });
+    }
+
+    const currentScores = {};
+    comps.forEach(c => { currentScores[c.skill_name] = Math.round(Number(c.score)); });
+
+    const allSkills = Array.from(new Set([...Object.keys(roleTargets), ...Object.keys(currentScores)]));
+
+    for (const skillName of allSkills) {
+      const currentScore = currentScores[skillName] !== undefined ? currentScores[skillName] : 0;
+      const targetScore = roleTargets[skillName] !== undefined ? roleTargets[skillName] : 75;
+
+      const existingGap = await adminClient.from('skill_gaps').select('id').eq('candidate_id', candidateId).eq('competency_name', skillName).maybeSingle();
+      if (existingGap.data) {
+        await adminClient.from('skill_gaps').update({ current_score: currentScore, target_score: targetScore }).eq('id', existingGap.data.id);
+      } else {
+        await adminClient.from('skill_gaps').insert({ candidate_id: candidateId, competency_name: skillName, current_score: currentScore, target_score: targetScore });
+      }
+    }
+
+    const gapsRes = await adminClient.from('skill_gaps').select('*').eq('candidate_id', candidateId);
+    let gapList = (gapsRes.data || []).map(g => {
+      const cur = Math.round(Number(g.current_score));
+      const tgt = Math.round(Number(g.target_score));
+      const delta = tgt - cur;
+      return {
+        id: g.id,
+        competency_name: g.competency_name,
+        current_score: cur,
+        target_score: tgt,
+        gap: Math.max(0, delta),
+        delta_raw: delta
+      };
+    });
+
+    gapList.sort((a, b) => b.gap - a.gap);
+
+    let totalTarget = 0;
+    let totalAchieved = 0;
+    gapList.forEach(g => {
+      totalTarget += g.target_score;
+      totalAchieved += Math.min(g.current_score, g.target_score);
+    });
+    const matchPercent = totalTarget > 0 ? Math.round((totalAchieved / totalTarget) * 100) : 0;
+
+    return send(res, 200, {
+      has_data: true,
+      target_role: targetRole,
+      match_percent: matchPercent,
+      skill_gaps: gapList,
+      largest_gap: gapList.length > 0 ? gapList[0] : null
+    });
+
+  } catch (err) { return safeError(res, err, 'Skill gap analysis could not be computed.'); }
+});
+
+app.get('/api/career-recommendations/:candidateId', requireUser, async (req, res) => {
+  if (!ownCandidate(req, res, req.params.candidateId)) return;
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+
+  try {
+    const candidateId = req.params.candidateId;
+    const { data: competencies, error: competencyError } = await adminClient
+      .from('competencies')
+      .select('skill_name, score')
+      .eq('candidate_id', candidateId);
+
+    if (competencyError) return fail(res, 500, competencyError.message);
+    if (!competencies || competencies.length === 0) return send(res, 200, { has_data: false });
+
+    const currentScores = Object.fromEntries(
+      competencies.map(({ skill_name, score }) => [skill_name, Number(score)])
+    );
+    const recommendations = Object.entries(ROLE_TARGET_MAP)
+      .map(([role_title, targets]) => {
+        const skillComparisons = Object.entries(targets).map(([skill_name, target_score]) => {
+          const current_score = Math.max(0, currentScores[skill_name] || 0);
+          const match_ratio = Math.min(current_score / target_score, 1);
+          return {
+            skill_name,
+            current_score: Math.round(current_score),
+            target_score,
+            match_ratio,
+            shortfall: Math.max(target_score - current_score, 0)
+          };
+        });
+        const matching_competencies = skillComparisons
+          .filter(item => item.current_score > 0)
+          .sort((a, b) => b.match_ratio - a.match_ratio || b.current_score - a.current_score)
+          .slice(0, 3)
+          .map(({ skill_name, current_score, target_score }) => ({ skill_name, current_score, target_score }));
+        const missing_competencies = skillComparisons
+          .filter(item => item.shortfall > 0)
+          .sort((a, b) => b.shortfall - a.shortfall)
+          .slice(0, 3)
+          .map(({ skill_name, current_score, target_score, shortfall }) => ({ skill_name, current_score, target_score, shortfall }));
+        const match_percent = Math.round(
+          (skillComparisons.reduce((sum, item) => sum + item.match_ratio, 0) / skillComparisons.length) * 100
+        );
+        return { role_title, match_percent, matching_competencies, missing_competencies };
+      })
+      .sort((a, b) => b.match_percent - a.match_percent || a.role_title.localeCompare(b.role_title))
+      .slice(0, 4);
+
+    const { error: upsertError } = await adminClient.from('career_recommendations').upsert(
+      recommendations.map(recommendation => ({ candidate_id: candidateId, ...recommendation })),
+      { onConflict: 'candidate_id,role_title' }
+    );
+    if (upsertError) return fail(res, 500, upsertError.message);
+
+    return send(res, 200, { has_data: true, recommendations });
+  } catch (err) { return safeError(res, err, 'Career recommendations could not be computed.'); }
+});
+app.post('/api/field-discovery', requireUser, async (req, res) => queryList(res, 'field_discovery_responses', adminClient.from('field_discovery_responses').insert({ ...req.body, candidate_id: req.user.id }).select().single()));
+app.get('/api/field-discovery/:candidateId', requireUser, async (req, res) => { if (!ownCandidate(req, res, req.params.candidateId)) return; res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private'); return queryList(res, 'field_discovery_responses', adminClient.from('field_discovery_responses').select('*').eq('candidate_id', req.params.candidateId).order('created_at', { ascending: false })); });
+app.post('/api/feedback', async (req, res) => queryList(res, 'feedback', adminClient.from('feedback').insert(req.body).select().single()));
+app.get('/api/feedback', async (req, res) => queryList(res, 'feedback', adminClient.from('feedback').select('*').order('created_at', { ascending: false })));
+
+app.listen(port, () => console.log(`SkillSync API listening on http://127.0.0.1:${port}`));

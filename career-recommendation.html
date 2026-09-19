@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Recommendation — SkillSync</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="home.html" class="brand-logo"><div class="brand-icon"><i class="fa-solid fa-bolt"></i></div><span>SkillSync</span><span class="brand-badge">AI Platform</span></a>
+        <ul class="nav-links">
+          <li><a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+          <li><a href="assessments.html" class="nav-link"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link active"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+        <div class="nav-actions"><div class="user-profile"><div class="avatar">MS</div><div class="user-info"><span class="user-name">Muskaan 👋</span><span class="user-role">Intermediate Level</span></div></div><button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button></div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="page-header"><span class="badge badge-cyan"><i class="fa-solid fa-compass"></i> Evidence-based direction</span><h1 class="page-title">Career Recommendation</h1><p class="page-subtitle">Explore roles that align with your demonstrated competencies and see the next improvement to prioritize.</p></div>
+      <div class="card banner-card career-summary"><div><span class="badge badge-primary">Current competency profile</span><h2 id="careerSummaryTitle">Loading your verified competency profile…</h2><p id="careerSummaryText">Calculating role matches from your completed assessment data.</p></div><div class="career-summary-score"><strong id="careerSummaryScore">—</strong><span>Top role match</span></div></div>
+      <div id="careerRecommendationsGrid" class="grid-2 career-grid"></div>
+      <div class="card career-note"><i class="fa-solid fa-circle-info"></i><p id="careerRecommendationNote">Loading evidence-based recommendations…</p></div>
+    </main>
+    <footer class="footer"><div><strong>SkillSync</strong> — Career direction from demonstrated ability</div></footer>
+  </div>
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

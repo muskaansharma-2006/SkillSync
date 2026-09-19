@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Competency Passport (Proof of Skill) — SkillSync</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <span>SkillSync</span>
+          <span class="brand-badge">AI Platform</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Home</a></li>
+          <li><a href="assessments.html" class="nav-link"><i class="fa-solid fa-laptop-code"></i> Assessments</a></li>
+          <li><a href="practice.html" class="nav-link"><i class="fa-solid fa-fire"></i> Practice</a></li>
+          <li><a href="passport.html" class="nav-link active"><i class="fa-solid fa-id-card"></i> Passport</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="mentor.html" class="nav-link"><i class="fa-solid fa-robot"></i> AI Mentor</a></li>
+          <li><a href="career-recommendation.html" class="nav-link"><i class="fa-solid fa-compass"></i> Career</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="user-profile">
+            <div class="avatar">MS</div>
+            <div class="user-info">
+              <span class="user-name">Muskaan 👋</span>
+              <span class="user-role">Candidate View</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <div class="page-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge badge-green" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-shield-check"></i> Public Verifiable Skill Credential</span>
+            <h1 class="page-title"><i class="fa-solid fa-id-card" style="color: var(--primary);"></i> Competency Passport</h1>
+            <p class="page-subtitle">Demonstrated evidence of real-world capability. Shared directly with employers and recruiters.</p>
+          </div>
+          
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="sharePassportBtn" class="btn btn-secondary">
+              <i class="fa-solid fa-link"></i> Copy Public Link
+            </button>
+            <button id="exportPassportBtn" class="btn btn-primary">
+              <i class="fa-solid fa-download"></i> Download PDF Passport
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passport Card Hero Box -->
+      <div class="passport-card" style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; position: relative; z-index: 1;">
+          
+          <!-- Profile & Passport ID -->
+          <div style="display: flex; gap: 1.25rem; align-items: center;">
+            <div class="avatar" style="width: 72px; height: 72px; font-size: 1.6rem; border-color: var(--primary);">MS</div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <h2 style="font-size: 1.6rem; font-weight: 800; color: #fff;">Muskaan Sharma</h2>
+                <i class="fa-solid fa-circle-check" style="color: var(--accent-cyan); font-size: 1.1rem;" title="Verified Candidate"></i>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.15rem;">
+                Software Engineer & Data Analyst • Verified ID: <span style="font-family: var(--font-code); color: var(--accent-cyan);">#CPX-9482-MS</span>
+              </p>
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                <span class="badge badge-primary">Intermediate Level</span>
+                <span class="badge badge-cyan">Cryptographic SHA-256 Verified</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Score Circle & Verification Badge -->
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div style="text-align: right;">
+              <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Verified Competency</div>
+              <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-cyan); line-height: 1;">84%</div>
+            </div>
+
+            <!-- QR Code Mock -->
+            <div style="width: 70px; height: 70px; background: #fff; border-radius: var(--radius-sm); padding: 5px; display: flex; align-items: center; justify-content: center;" title="Scan to verify passport authenticity">
+              <i class="fa-solid fa-qrcode" style="font-size: 3.2rem; color: #090d16;"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Four Core Proof Metrics -->
+        <div class="grid-4" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; position: relative; z-index: 1;">
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: #fff;">6</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Assessments Completed</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-cyan);">18</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Practical Challenges</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-purple);">4</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Real-World Simulations</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-green);">12</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Verified Competencies</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verified Competency Cards Grid -->
+      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 1.25rem;">
+        <i class="fa-solid fa-certificate" style="color: var(--primary); margin-right: 0.5rem;"></i> Verified Competency Badges
+      </h3>
+
+      <div class="grid-3" style="margin-bottom: 2rem;">
+
+        <!-- Badge 1 -->
+        <div class="card card-hover-glow">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: rgba(56, 189, 248, 0.15); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+              <i class="fa-brands fa-python"></i>
+            </div>
+            <span class="badge badge-cyan">87% Verified</span>
+          </div>
+
+          <h4 style="font-size: 1.1rem; font-weight: 700;">Python Practical Development</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem;">
+            Demonstrated mastery in data processing, algorithms, and modular structure.
+          </p>
+          <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem; font-family: var(--font-code);">
+            Proof Hash: 0x8f9a...3b4e
+          </div>
+        </div>
+
+        <!-- Badge 2 -->
+        <div class="card card-hover-glow">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: rgba(167, 139, 250, 0.15); color: #a78bfa; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <span class="badge badge-purple">82% Verified</span>
+          </div>
+
+          <h4 style="font-size: 1.1rem; font-weight: 700;">SQL & Relational Analytics</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem;">
+            Demonstrated complex JOIN queries, aggregation pipelines, and schema indexing.
+          </p>
+          <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem; font-family: var(--font-code);">
+            Proof Hash: 0x4e12...7a89
+          </div>
+        </div>
+
+        <!-- Badge 3 -->
+        <div class="card card-hover-glow">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: rgba(253, 224, 71, 0.15); color: #fde047; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+              <i class="fa-solid fa-lightbulb"></i>
+            </div>
+            <span class="badge badge-green">91% Verified</span>
+          </div>
+
+          <h4 style="font-size: 1.1rem; font-weight: 700;">Algorithmic Logic</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem;">
+            Demonstrated optimal O(N) complexity algorithms and edge case resilience.
+          </p>
+          <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem; font-family: var(--font-code);">
+            Proof Hash: 0x9b31...0c52
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Verified Evidence Timeline -->
+      <div class="card">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i> Competency Achievement Timeline
+        </h3>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-node completed"></div>
+            <div style="font-weight: 700; font-size: 0.95rem;">Python Practical Assessment Completed (84% Overall)</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Verified 2 days ago • 8 Challenges Mastered</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-node completed"></div>
+            <div style="font-weight: 700; font-size: 0.95rem;">SQL Benchmark Certification (82% Overall)</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Verified 1 week ago • 6 Query Scenarios Mastered</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div><strong>SkillSync</strong> — Digital Skill Passport Engine</div>
+        <div><a href="index.html">Back to Dashboard</a></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js?v=20260914-3"></script>
+  <script src="intro.js?v=20260914-1"></script>
+</body>
+</html>

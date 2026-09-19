@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — SkillSync</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=20260914-3">
+</head>
+<body class="auth-page">
+  <div class="auth-shell">
+    <a href="home.html" class="brand-logo auth-brand"><div class="brand-icon"><i class="fa-solid fa-bolt"></i></div><span>SkillSync</span><span class="brand-badge">AI Platform</span></a>
+    <main class="auth-layout">
+      <section class="auth-context"><span class="badge badge-cyan"><i class="fa-solid fa-shield-halved"></i> Your practical journey starts here</span><h1>Turn your next step into something you can demonstrate.</h1><p>Sign in to continue to your competency dashboard, assessments, Skill Gap roadmap, AI Mentor, and Career recommendations.</p><div class="auth-proof"><i class="fa-solid fa-check"></i><span>Backend Gemini configuration is ready by default. No API key is required during login.</span></div></section>
+      <section class="card auth-card" aria-labelledby="authTitle">
+        <div class="auth-tabs"><button id="loginTab" class="auth-tab active" type="button">Login</button><button id="signupTab" class="auth-tab" type="button">Create account</button></div>
+        <div id="authFeedback" class="auth-feedback" role="status" hidden></div>
+        <div id="loginPanel">
+          <h2 id="authTitle">Welcome to SkillSync</h2><p class="auth-subtitle">Continue where your practical skills left off.</p>
+          <form id="loginForm" novalidate>
+            <label>Email<input id="loginEmail" type="email" autocomplete="email" required></label><span class="field-error" id="loginEmailError"></span>
+            <label>Password<div class="password-field"><input id="loginPassword" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-target="loginPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label><span class="field-error" id="loginPasswordError"></span>
+            <div class="auth-options"><label class="checkbox-label"><input id="rememberMe" type="checkbox"> Remember me</label><button id="forgotPassword" class="text-button" type="button">Forgot password?</button></div>
+            <button class="btn btn-primary auth-submit" type="submit"><span>Login</span><i class="fa-solid fa-arrow-right"></i></button>
+          </form>
+          <div class="auth-divider"><span>OR</span></div><button id="googleLogin" class="btn btn-secondary auth-submit" type="button"><i class="fa-brands fa-google"></i> Continue with Google</button>
+          <p class="auth-switch">Don't have an account? <button id="switchToSignup" class="text-button" type="button">Create an account</button></p>
+        </div>
+        <div id="signupPanel" hidden>
+          <h2>Create your SkillSync account</h2><p class="auth-subtitle">Choose a direction now. You can change your role later.</p>
+          <form id="signupForm" novalidate>
+            <label>Full Name<input id="signupName" type="text" autocomplete="name" required></label><span class="field-error" id="signupNameError"></span>
+            <label>Email<input id="signupEmail" type="email" autocomplete="email" required></label><span class="field-error" id="signupEmailError"></span>
+            <label>Password<div class="password-field"><input id="signupPassword" type="password" autocomplete="new-password" required><button class="password-toggle" type="button" data-target="signupPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label><span class="field-error" id="signupPasswordError"></span>
+            <label>Confirm Password<div class="password-field"><input id="signupConfirmPassword" type="password" autocomplete="new-password" required><button class="password-toggle" type="button" data-target="signupConfirmPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label><span class="field-error" id="signupConfirmPasswordError"></span>
+            <fieldset><legend>Role</legend><label class="role-choice"><input type="radio" name="signupRole" value="candidate" checked> Candidate</label><label class="role-choice"><input type="radio" name="signupRole" value="recruiter"> Recruiter</label></fieldset>
+            <button class="btn btn-primary auth-submit" type="submit"><span>Create Account</span><i class="fa-solid fa-arrow-right"></i></button>
+          </form>
+          <p class="auth-switch">Already have an account? <button id="switchToLogin" class="text-button" type="button">Login</button></p>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">SkillSync — Don't prove what you learned. Demonstrate what you can do.</footer>
+  </div>
+  <script src="auth.js?v=20260914-1"></script>
+</body>
+</html>

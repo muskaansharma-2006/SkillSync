@@ -633,6 +633,8 @@ async function initAssessmentsPage() {
           matchesFilter = category.includes("backend");
         } else if (activeFilter === "frontend") {
           matchesFilter = category.includes("frontend");
+        } else if (activeFilter === "communication") {
+          matchesFilter = category.includes("communication");
         } else if (activeFilter === "technical") {
           matchesFilter = category.includes("programming") || category.includes("core cs") || category.includes("backend");
         } else if (activeFilter === "analytical") {
@@ -646,10 +648,11 @@ async function initAssessmentsPage() {
     });
 
     if (filtered.length === 0) {
+      const emptyTitle = activeFilter === "communication" ? "No communication assessments yet" : "No matching assessments";
       container.innerHTML = `
         <div class="card" style="grid-column: 1 / -1; padding: 2.5rem; text-align: center; background: rgba(17, 24, 39, 0.6);">
           <i class="fa-solid fa-magnifying-glass" style="font-size: 2rem; color: var(--text-dim); margin-bottom: 0.75rem;"></i>
-          <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.35rem;">No matching assessments</h3>
+          <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.35rem;">${emptyTitle}</h3>
           <p style="font-size: 0.88rem; color: var(--text-muted);">Try adjusting your search query or filter selection.</p>
         </div>
       `;

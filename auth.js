@@ -1,4 +1,4 @@
-const AUTH_API = "http://127.0.0.1:3000/api/auth";
+const AUTH_API = `${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : (window.API_BASE_URL || 'http://127.0.0.1:3000')}/api/auth`;
 
 const loginPanel = document.getElementById("loginPanel");
 const signupPanel = document.getElementById("signupPanel");

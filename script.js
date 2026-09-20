@@ -2,6 +2,8 @@
   SkillSync - Core Application Logic & Interactions
 */
 
+const getApiBaseUrl = () => (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : (window.API_BASE_URL || '')).replace(/\/$/, '');
+
 // Application State Store (Local Storage sync with fallback mock defaults)
 const CompetencyState = {
   candidate: {
@@ -143,7 +145,7 @@ async function enforceAuthentication() {
   const page = getPageName() || "index.html";
   if (!PROTECTED_PAGES.has(page)) return true;
   try {
-    const response = await fetch("/api/auth/me", { credentials: "include" });
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/me`, { credentials: "include" });
     const result = await response.json();
     const user = result.data;
     if (!response.ok || !user) throw new Error("Unauthenticated");
@@ -250,7 +252,7 @@ function initProfileMenu() {
     menu.querySelector(".profile-logout-btn").addEventListener("click", async event => {
       event.stopPropagation();
       try {
-        const response = await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+        const response = await fetch(`${getApiBaseUrl()}/api/auth/logout`, { method: "POST", credentials: "include" });
         const result = await response.json();
         if (!response.ok || !result.success) throw new Error(result.message || "Logout failed.");
         delete window.SkillSyncAuth;
@@ -320,8 +322,8 @@ async function initCandidateDashboard() {
   }
 
   try {
-    const compRes = await fetch(`/api/candidates/${user.id}/competencies`, { credentials: "include" });
-    const resRes = await fetch(`/api/candidates/${user.id}/results`, { credentials: "include" });
+    const compRes = await fetch(`${getApiBaseUrl()}/api/candidates/${user.id}/competencies`, { credentials: "include" });
+    const resRes = await fetch(`${getApiBaseUrl()}/api/candidates/${user.id}/results`, { credentials: "include" });
     
     let competencies = [];
     let overallScore = null;
@@ -578,7 +580,7 @@ async function initAssessmentsPage() {
   let assessmentsList = [];
 
   try {
-    const res = await fetch("/api/assessments");
+    const res = await fetch(`${getApiBaseUrl()}/api/assessments`);
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
     const body = await res.json();
     if (!body.success) throw new Error(body.message || "Failed to load assessments");
@@ -714,7 +716,7 @@ async function initPracticePage() {
   let practiceList = [];
 
   try {
-    const res = await fetch("/api/practice");
+    const res = await fetch(`${getApiBaseUrl()}/api/practice`);
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
     const body = await res.json();
     if (!body.success) throw new Error(body.message || "Failed to load practice challenges");
@@ -887,7 +889,7 @@ async function triggerSubmissionModal() {
 
     let assessmentId = "python-practical";
     try {
-      const assRes = await fetch("/api/assessments");
+      const assRes = await fetch(`${getApiBaseUrl()}/api/assessments`);
       if (assRes.ok) {
         const assJson = await assRes.json();
         if (assJson.data && assJson.data.length > 0) {
@@ -898,7 +900,7 @@ async function triggerSubmissionModal() {
 
     if (statusMsg) statusMsg.textContent = "Generating AI Insight & per-competency vector breakdown...";
 
-    const res = await fetch(`/api/assessment-attempts/current/submit`, {
+    const res = await fetch(`${getApiBaseUrl()}/api/assessment-attempts/current/submit`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -940,7 +942,7 @@ async function initResultPage() {
 
   try {
     if (resultId) {
-      const res = await fetch(`/api/results/${resultId}`, { credentials: "include" });
+      const res = await fetch(`${getApiBaseUrl()}/api/results/${resultId}`, { credentials: "include" });
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
@@ -950,7 +952,7 @@ async function initResultPage() {
     }
 
     if (!resultData && user.id) {
-      const latestRes = await fetch(`/api/candidates/${user.id}/results`, { credentials: "include" });
+      const latestRes = await fetch(`${getApiBaseUrl()}/api/candidates/${user.id}/results`, { credentials: "include" });
       if (latestRes.ok) {
         const json = await latestRes.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -1073,7 +1075,7 @@ async function fetchAndRenderSkillGap(candidateId, targetRole) {
   compListEl.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Calculating live skill gap vector...</div>`;
 
   try {
-    const res = await fetch(`/api/skill-gap/${candidateId}?role=${encodeURIComponent(targetRole)}`, { credentials: "include" });
+    const res = await fetch(`${getApiBaseUrl()}/api/skill-gap/${candidateId}?role=${encodeURIComponent(targetRole)}`, { credentials: "include" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
 
@@ -1295,7 +1297,7 @@ async function initCareerRecommendationPage() {
   recommendationsEl.innerHTML = `<div class="card" style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Calculating role matches from your verified competencies...</div>`;
 
   try {
-    const response = await fetch(`/api/career-recommendations/${user.id}`, { credentials: "include" });
+    const response = await fetch(`${getApiBaseUrl()}/api/career-recommendations/${user.id}`, { credentials: "include" });
     const result = await response.json();
     if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
 
@@ -1407,8 +1409,8 @@ async function initRecruiterDashboard() {
 
   try {
     const [candidatesResponse, openingsResponse] = await Promise.all([
-      fetch("/api/candidates", { credentials: "include" }),
-      fetch("/api/job-openings", { credentials: "include" })
+      fetch(`${getApiBaseUrl()}/api/candidates`, { credentials: "include" }),
+      fetch(`${getApiBaseUrl()}/api/job-openings`, { credentials: "include" })
     ]);
     const [candidatesResult, openingsResult] = await Promise.all([
       candidatesResponse.json(),
@@ -1505,9 +1507,9 @@ async function initCandidateProfileView() {
 
   try {
     const jobId = new URLSearchParams(window.location.search).get("jobId");
-    const jobFitUrl = `/api/candidates/${encodeURIComponent(candidateId)}/job-fit${jobId ? `?jobId=${encodeURIComponent(jobId)}` : ""}`;
+    const jobFitUrl = `${getApiBaseUrl()}/api/candidates/${encodeURIComponent(candidateId)}/job-fit${jobId ? `?jobId=${encodeURIComponent(jobId)}` : ""}`;
     const [candidateResponse, jobFitResponse] = await Promise.all([
-      fetch(`/api/candidates/${encodeURIComponent(candidateId)}`, { credentials: "include" }),
+      fetch(`${getApiBaseUrl()}/api/candidates/${encodeURIComponent(candidateId)}`, { credentials: "include" }),
       fetch(jobFitUrl, { credentials: "include" })
     ]);
     const [candidateResult, jobFitResult] = await Promise.all([
@@ -1656,7 +1658,7 @@ function initAIMentorPage() {
       question: question
     };
 
-    const BACKEND_URL = "/api/ai/mentor";
+    const BACKEND_URL = `${getApiBaseUrl()}/api/ai/mentor`;
 
     try {
       const response = await fetch(BACKEND_URL, {

@@ -23,7 +23,22 @@ if (!supabaseUrl || !supabaseAnonKey || !serviceRoleKey) {
 const authClient = createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false, autoRefreshToken: false } });
 const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
 
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = [
+  'https://skillsync-web.onrender.com',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, origin);
+    }
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(projectRoot));
 
@@ -530,4 +545,4 @@ app.post('/api/ai/mentor', requireUser, async (req, res) => {
     return fail(res, 503, 'AI Mentor service is temporarily unavailable.');
   }
 });
-app.listen(port, () => console.log(`SkillSync API listening on http://127.0.0.1:${port}`));
+app.listen(port, () => console.log(`SkillSync API listening on port ${port}`));

@@ -1,4 +1,4 @@
-const SETTINGS_API = "http://127.0.0.1:3000/api";
+const SETTINGS_API = `${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : (window.API_BASE_URL || 'http://127.0.0.1:3000')}/api`;
 
 async function loadSettings() {
   const response = await fetch(`${SETTINGS_API}/auth/me`, { credentials: "include" });

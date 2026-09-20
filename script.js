@@ -623,12 +623,20 @@ async function initAssessmentsPage() {
 
       let matchesFilter = true;
       if (activeFilter !== "all") {
-        if (activeFilter === "technical") {
+        if (activeFilter === "programming") {
+          matchesFilter = category.includes("programming");
+        } else if (activeFilter === "data") {
+          matchesFilter = category.includes("data") || category.includes("sql") || category.includes("analytics");
+        } else if (activeFilter === "core_cs") {
+          matchesFilter = category.includes("core cs");
+        } else if (activeFilter === "backend") {
+          matchesFilter = category.includes("backend");
+        } else if (activeFilter === "frontend") {
+          matchesFilter = category.includes("frontend");
+        } else if (activeFilter === "technical") {
           matchesFilter = category.includes("programming") || category.includes("core cs") || category.includes("backend");
         } else if (activeFilter === "analytical") {
           matchesFilter = category.includes("data") || category.includes("sql") || category.includes("analytics");
-        } else if (activeFilter === "communication") {
-          matchesFilter = category.includes("communication") || category.includes("frontend");
         } else {
           matchesFilter = difficulty.toLowerCase() === activeFilter.toLowerCase();
         }

@@ -1,103 +1,115 @@
 const discoveryQuestions = [
   {
     topic: "How you like to think",
-    text: "Which kind of problem sounds most satisfying?",
+    text: "Which kind of problem sounds most satisfying to solve?",
     options: [
-      { label: "Breaking a complex problem into clear steps", tags: ["technical", "analytical"] },
-      { label: "Finding a new, creative way around a constraint", tags: ["technical", "communication"] },
-      { label: "Understanding what people need and organizing a solution", tags: ["communication", "analytical"] }
+      { label: "Building user interfaces, DOM interactions, and responsive layouts", tags: ["frontend"] },
+      { label: "Designing APIs, server routing, and database integrations", tags: ["backend"] },
+      { label: "Analyzing numbers, querying data, and uncovering business metrics", tags: ["data"] }
     ]
   },
   {
     topic: "Your curiosity",
     text: "What would you most enjoy investigating?",
     options: [
-      { label: "How an app or service works behind the scenes", tags: ["technical"] },
-      { label: "Patterns hidden in numbers, events, or customer behavior", tags: ["analytical"] },
-      { label: "Why a team or product is struggling and how to improve it", tags: ["communication", "analytical"] }
+      { label: "Algorithmic efficiency, time complexity, and data structures", tags: ["core_cs"] },
+      { label: "Writing clean syntax functions, loops, and handling logic errors", tags: ["programming"] },
+      { label: "How web applications render and interact with users in the browser", tags: ["frontend"] }
     ]
   },
   {
     topic: "Numbers and data",
     text: "How do you feel about working with numbers and data?",
     options: [
-      { label: "I enjoy finding patterns and making evidence-based decisions", tags: ["analytical"] },
-      { label: "I am comfortable using data when it helps solve a problem", tags: ["analytical", "technical"] },
-      { label: "I prefer ideas, conversations, and organizing people or work", tags: ["communication"] }
+      { label: "I love writing SQL queries, analyzing datasets, and building metrics", tags: ["data"] },
+      { label: "I prefer working on mathematical logic and core computer science problems", tags: ["core_cs"] },
+      { label: "I prefer building server APIs and application backend logic", tags: ["backend"] }
     ]
   },
   {
     topic: "Building things",
     text: "What would you rather make on a free afternoon?",
     options: [
-      { label: "A small tool, website, or automation", tags: ["technical"] },
-      { label: "A dashboard that explains what is happening", tags: ["analytical", "technical"] },
-      { label: "A plan, presentation, or workflow that helps people move forward", tags: ["communication"] }
+      { label: "A Python automation script or command-line tool", tags: ["programming"] },
+      { label: "An interactive web component or modern frontend dashboard", tags: ["frontend"] },
+      { label: "A scalable REST API service or database schema", tags: ["backend"] }
     ]
   },
   {
     topic: "Working with code",
-    text: "Which statement feels closest to you right now?",
+    text: "Which area sounds most exciting to practice right now?",
     options: [
-      { label: "I want to understand how code is built and debugged", tags: ["technical"] },
-      { label: "I would rather use tools than write much code", tags: ["analytical", "communication"] },
-      { label: "I am curious about code but want a practical, gradual start", tags: ["technical", "analytical"] }
+      { label: "Core programming syntax, functions, and code debugging", tags: ["programming"] },
+      { label: "Data structures, tree algorithms, and computational logic", tags: ["core_cs"] },
+      { label: "Relational tables, SQL joins, and data analysis queries", tags: ["data"] }
     ]
   },
   {
     topic: "Aptitude in practice",
-    text: "When something goes wrong, what do you naturally do first?",
+    text: "When building a software solution, what do you naturally focus on first?",
     options: [
-      { label: "Trace the steps until I find the root cause", tags: ["technical", "analytical"] },
-      { label: "Look for evidence and compare what changed", tags: ["analytical"] },
-      { label: "Ask questions, align people, and clarify the next action", tags: ["communication"] }
+      { label: "The visual presentation, responsive layout, and UI usability", tags: ["frontend"] },
+      { label: "Server endpoints, request handling, and backend data flow", tags: ["backend"] },
+      { label: "Big-O time complexity, data structures, and optimal algorithms", tags: ["core_cs"] }
     ]
   },
   {
     topic: "Your ideal workday",
-    text: "Which day would leave you feeling most energized?",
+    text: "Which project would leave you feeling most accomplished?",
     options: [
-      { label: "Building and improving a reliable technical system", tags: ["technical"] },
-      { label: "Turning messy information into a clear recommendation", tags: ["analytical"] },
-      { label: "Collaborating, presenting, and coordinating a useful outcome", tags: ["communication"] }
+      { label: "Writing robust Python code to solve data processing tasks", tags: ["programming"] },
+      { label: "Creating clean, responsive web user interfaces", tags: ["frontend"] },
+      { label: "Structuring relational databases and analyzing key datasets", tags: ["data"] }
     ]
   },
   {
     topic: "What to explore next",
-    text: "What would you most like to learn by trying a real challenge?",
+    text: "What would you most like to demonstrate in your next practical assessment?",
     options: [
-      { label: "How to build APIs, tools, or software features", tags: ["technical"] },
-      { label: "How to analyze data and explain what it means", tags: ["analytical"] },
-      { label: "How to frame problems and help a team make decisions", tags: ["communication", "analytical"] }
+      { label: "Building high-performance backend APIs and web servers", tags: ["backend"] },
+      { label: "Solving challenging core computer science and logic problems", tags: ["core_cs"] },
+      { label: "Mastering practical programming skills and code debugging", tags: ["programming"] }
     ]
   }
 ];
 
 const discoveryFields = {
-  technical: {
-    title: "Backend Development",
-    reason: "You seem drawn to building reliable systems, tracing how things work, and solving problems step by step.",
+  programming: {
+    title: "Programming",
+    reason: "You are drawn to writing clean functions, solving algorithmic tasks, and mastering practical coding fundamentals.",
+    icon: "fa-code",
+    filter: "programming"
+  },
+  data: {
+    title: "Data & SQL",
+    reason: "You are energized by finding patterns in numbers, writing relational SQL queries, and analyzing datasets.",
+    icon: "fa-database",
+    filter: "data"
+  },
+  core_cs: {
+    title: "Core CS",
+    reason: "You enjoy fundamental computer science principles, data structures, complexity analysis, and logic puzzles.",
+    icon: "fa-diagram-project",
+    filter: "core_cs"
+  },
+  backend: {
+    title: "Backend",
+    reason: "You are fascinated by server routing, REST API architectures, request handling, and backend data flows.",
     icon: "fa-server",
-    filter: "technical"
+    filter: "backend"
   },
-  analytical: {
-    title: "Data Analysis",
-    reason: "You seem energized by patterns, evidence, and turning information into useful decisions.",
-    icon: "fa-chart-column",
-    filter: "analytical"
-  },
-  communication: {
-    title: "Communication & Coordination",
-    reason: "You seem motivated by understanding people, clarifying direction, and helping work move forward.",
-    icon: "fa-comments",
-    filter: "communication"
+  frontend: {
+    title: "Frontend",
+    reason: "You enjoy building interactive user interfaces, managing DOM states, CSS layouts, and modern web UX.",
+    icon: "fa-desktop",
+    filter: "frontend"
   }
 };
 
 const discoveryState = {
   currentQuestion: 0,
   selectedAnswers: Array(discoveryQuestions.length).fill(null),
-  signals: { technical: 0, analytical: 0, communication: 0 }
+  signals: { programming: 0, data: 0, core_cs: 0, backend: 0, frontend: 0 }
 };
 
 const questionText = document.getElementById("questionText");
@@ -145,11 +157,13 @@ function renderDiscoveryQuestion() {
 }
 
 function renderDiscoveryResults() {
-  discoveryState.signals = { technical: 0, analytical: 0, communication: 0 };
+  discoveryState.signals = { programming: 0, data: 0, core_cs: 0, backend: 0, frontend: 0 };
   discoveryState.selectedAnswers.forEach((answerIndex, questionIndex) => {
     if (answerIndex === null) return;
     discoveryQuestions[questionIndex].options[answerIndex].tags.forEach(tag => {
-      discoveryState.signals[tag] += 1;
+      if (discoveryState.signals[tag] !== undefined) {
+        discoveryState.signals[tag] += 1;
+      }
     });
   });
 

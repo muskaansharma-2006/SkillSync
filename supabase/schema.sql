@@ -147,3 +147,15 @@ create policy feedback_own_select on public.feedback for select using (auth.uid(
 create policy feedback_own_insert on public.feedback for insert with check (candidate_id is null or auth.uid() = candidate_id);
 
 -- Assessment results and competency evidence intentionally have no delete policy.
+
+create table if not exists public.user_api_keys (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  encrypted_key text not null,
+  key_status text not null default 'connected',
+  updated_at timestamptz not null default now()
+);
+
+alter table public.user_api_keys enable row level security;
+
+create policy user_api_keys_own_all on public.user_api_keys for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+

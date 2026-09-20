@@ -1225,3 +1225,90 @@ button {
   to { transform: rotate(360deg); }
 }
 
+/* BYOK (Bring Your Own Key) Styles */
+.byok-card {
+  border-top: 3px solid var(--accent-cyan);
+  background: var(--bg-card);
+}
+.byok-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.byok-input-group input {
+  width: 100%;
+  padding-right: 2.8rem !important;
+}
+.byok-toggle-btn {
+  position: absolute;
+  right: 0.6rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.4rem;
+  font-size: 0.9rem;
+}
+.byok-toggle-btn:hover {
+  color: var(--text-main);
+}
+.byok-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+}
+.byok-feedback {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.byok-feedback-info {
+  background: var(--accent-cyan-light);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: #a5f3fc;
+}
+.byok-feedback-success {
+  background: var(--accent-green-light);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+.byok-feedback-error {
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #fecdd3;
+}
+.mentor-card-wrapper {
+  position: relative;
+}
+.byok-lock-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgba(11, 15, 25, 0.88);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+.byok-lock-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2));
+  border: 1px solid var(--border-highlight);
+  display: grid;
+  place-items: center;
+  color: var(--accent-cyan);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+

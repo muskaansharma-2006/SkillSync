@@ -4,6 +4,8 @@ import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
+import { saveUserKey, getUserKeyStatus, deleteUserKey, generateAIMentorResponse } from './ai/aiService.js';
+
 
 dotenv.config({ path: new URL('../backend/.env', import.meta.url) });
 
@@ -11,7 +13,7 @@ const app = express();
 app.set('etag', false);
 const port = Number(process.env.PORT || 3000);
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
-const aiServiceUrl = (process.env.AI_SERVICE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -533,17 +535,71 @@ app.post('/api/field-discovery', requireUser, async (req, res) => queryList(res,
 app.get('/api/field-discovery/:candidateId', requireUser, async (req, res) => { if (!ownCandidate(req, res, req.params.candidateId)) return; res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private'); return queryList(res, 'field_discovery_responses', adminClient.from('field_discovery_responses').select('*').eq('candidate_id', req.params.candidateId).order('created_at', { ascending: false })); });
 app.post('/api/feedback', async (req, res) => queryList(res, 'feedback', adminClient.from('feedback').insert(req.body).select().single()));
 app.get('/api/feedback', async (req, res) => queryList(res, 'feedback', adminClient.from('feedback').select('*').order('created_at', { ascending: false })));
-app.post('/api/ai/mentor', requireUser, async (req, res) => {
+app.get('/api/user/key-status', requireUser, async (req, res) => {
   try {
-    const aiRes = await fetch(`${aiServiceUrl}/api/ai/mentor`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body)
-    });
-    const data = await aiRes.json();
-    return res.status(aiRes.status).json(data);
+    const status = await getUserKeyStatus(adminClient, req.user.id);
+    return send(res, 200, status);
   } catch (err) {
-    return fail(res, 503, 'AI Mentor service is temporarily unavailable.');
+    return safeError(res, err, 'Failed to fetch API key status.');
   }
 });
+
+app.post('/api/user/api-key', requireUser, async (req, res) => {
+  const { apiKey } = req.body || {};
+  if (!apiKey || typeof apiKey !== 'string' || !apiKey.trim()) {
+    return fail(res, 400, 'API key is required.');
+  }
+  try {
+    const result = await saveUserKey(adminClient, req.user.id, apiKey.trim());
+    return send(res, 200, result);
+  } catch (err) {
+    if (err.code === 'INVALID_KEY') {
+      return fail(res, 400, err.message);
+    }
+    if (err.code === 'RATE_LIMITED') {
+      return fail(res, 429, err.message);
+    }
+    if (err.code === 'NETWORK_ERROR') {
+      return fail(res, 503, err.message);
+    }
+    return fail(res, 400, err.message || 'Failed to save API key.');
+  }
+});
+
+app.delete('/api/user/api-key', requireUser, async (req, res) => {
+  try {
+    const result = await deleteUserKey(adminClient, req.user.id);
+    return send(res, 200, result);
+  } catch (err) {
+    return safeError(res, err, 'Failed to remove API key.');
+  }
+});
+
+app.post('/api/ai/mentor', requireUser, async (req, res) => {
+  const { prompt, context } = req.body || {};
+  if (!prompt || typeof prompt !== 'string') {
+    return fail(res, 400, 'Prompt is required.');
+  }
+  try {
+    const responseText = await generateAIMentorResponse({
+      supabaseAdmin: adminClient,
+      userId: req.user.id,
+      prompt,
+      context
+    });
+    return send(res, 200, { response: responseText });
+  } catch (err) {
+    if (err.code === 'NO_KEY_CONNECTED' || err.code === 'DECRYPTION_FAILED') {
+      return fail(res, 403, err.message);
+    }
+    if (err.code === 'INVALID_KEY') {
+      return fail(res, 400, 'Your connected API key is invalid. Please update your key.');
+    }
+    if (err.code === 'RATE_LIMITED') {
+      return fail(res, 429, 'Your API key rate limit was exceeded. Please try again later.');
+    }
+    return safeError(res, err, err.message || 'AI Mentor service is temporarily unavailable.');
+  }
+});
+
 app.listen(port, () => console.log(`SkillSync API listening on port ${port}`));

@@ -1586,6 +1586,7 @@ function initAIMentorPage() {
   const input = document.getElementById("mentorQuestionInput");
   const sendBtn = document.getElementById("sendMentorBtn");
   const clearBtn = document.getElementById("clearChatBtn");
+  const lockOverlay = document.getElementById("byokLockOverlay");
   
   const emptyState = document.getElementById("mentorEmptyState");
   const loadingState = document.getElementById("mentorLoadingState");
@@ -1595,6 +1596,19 @@ function initAIMentorPage() {
   const questionText = document.getElementById("userQuestionText");
   const answerContent = document.getElementById("aiAnswerContent");
   const errorText = document.getElementById("errorMessageText");
+
+  // Initialize BYOK manager component
+  if (typeof window.BYOKManager !== 'undefined') {
+    window.BYOKManager.init({
+      containerId: 'byokCard',
+      onStatusChange: (statusState) => {
+        const isUnlocked = statusState.hasKey && statusState.status === 'connected';
+        if (lockOverlay) {
+          lockOverlay.style.display = isUnlocked ? 'none' : 'flex';
+        }
+      }
+    });
+  }
 
   // Suggested questions click handler
   const suggestionPills = document.querySelectorAll(".suggestion-pill");
@@ -1632,7 +1646,7 @@ function initAIMentorPage() {
     });
   }
 
-  // Submit question to FastAPI backend
+  // Submit question to backend
   async function submitMentorQuestion(question) {
     if (!question) return;
 
@@ -1648,9 +1662,8 @@ function initAIMentorPage() {
     }
     if (input) input.disabled = true;
 
-    // Structured candidate competency vector payload
     const payload = {
-      candidate: {
+      context: {
         overallScore: CompetencyState.candidate.overallScore || 78,
         targetRole: "Java Developer",
         skills: {
@@ -1658,14 +1671,9 @@ function initAIMentorPage() {
           "debugging": 65,
           "sql": 81,
           "problemSolving": 79
-        },
-        targets: CompetencyState.candidate.targets || {
-          "java": 80,
-          "debugging": 75,
-          "sql": 70,
-          "problemSolving": 80
         }
       },
+      prompt: question,
       question: question
     };
 
@@ -1674,6 +1682,7 @@ function initAIMentorPage() {
     try {
       const response = await fetch(BACKEND_URL, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -1687,22 +1696,28 @@ function initAIMentorPage() {
       if (response.ok && data.success) {
         if (responseBox) responseBox.style.display = "block";
         if (questionText) questionText.textContent = question;
-        if (answerContent) answerContent.textContent = data.answer;
+        const answer = data.data?.response || data.data?.answer || data.answer || data.response;
+        if (answerContent) answerContent.textContent = answer;
         showToast("Gemini AI Mentor response generated successfully!", "success");
       } else {
         if (errorState) errorState.style.display = "block";
-        const errMsg = "AI service is temporarily unavailable. Please try again.";
+        const errMsg = data.message || "AI service encountered an issue. Please check your API key.";
         if (errorText) errorText.textContent = errMsg;
         showToast("AI Mentor encountered an error.", "info");
+        if (response.status === 403 || response.status === 400) {
+          if (typeof window.BYOKManager !== 'undefined') {
+            window.BYOKManager.checkKeyStatus();
+          }
+        }
       }
 
     } catch (err) {
       if (loadingState) loadingState.style.display = "none";
       if (errorState) errorState.style.display = "block";
       if (errorText) {
-        errorText.textContent = `Network Error: Unable to reach FastAPI backend at ${BACKEND_URL}. Details: ${err.message}. Please ensure the backend server is running.`;
+        errorText.textContent = `Network Error: Unable to reach backend service at ${BACKEND_URL}. Details: ${err.message}.`;
       }
-      showToast("Could not connect to FastAPI backend.", "info");
+      showToast("Could not connect to backend.", "info");
     } finally {
       if (sendBtn) {
         sendBtn.disabled = false;
@@ -1712,3 +1727,4 @@ function initAIMentorPage() {
     }
   }
 }
+

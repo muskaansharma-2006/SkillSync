@@ -77,8 +77,49 @@
         
         <!-- Left Column: Candidate Context Profile Summary -->
         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-          
+          <!-- BYOK (Bring Your Own Key) Card -->
+          <div class="card byok-card" id="byokCard">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 1rem; font-weight: 700;">
+                <i class="fa-solid fa-key" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i> Gemini API Key (BYOK)
+              </h3>
+              <span id="byokStatusBadge" class="badge badge-secondary"><i class="fa-solid fa-key"></i> Key Required</span>
+            </div>
+
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+              Connect your Google Gemini API key to unlock context-aware AI coaching. Your key is stored encrypted on our backend and never exposed.
+            </p>
+
+            <form id="byokForm" style="display: flex; flex-direction: column;">
+              <div class="byok-input-group">
+                <input type="password" id="byokApiKeyInput" placeholder="Paste Gemini API Key (e.g. AIzaSy...)" autocomplete="off" style="padding: 0.75rem 0.85rem; background: var(--bg-card-light); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.88rem;" />
+                <button type="button" class="byok-toggle-btn" id="byokToggleVisibility" title="Toggle key visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+
+              <div class="byok-actions">
+                <button type="submit" id="byokConnectBtn" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                  <i class="fa-solid fa-plug"></i> Connect Key
+                </button>
+                <button type="submit" id="byokUpdateBtn" class="btn btn-secondary btn-sm" style="display: none; align-items: center; gap: 0.4rem;">
+                  <i class="fa-solid fa-pen-to-square"></i> Update Key
+                </button>
+                <button type="button" id="byokRemoveBtn" class="btn btn-secondary btn-sm" style="display: none; align-items: center; gap: 0.4rem; color: #f87171; border-color: rgba(248, 113, 113, 0.3);">
+                  <i class="fa-solid fa-trash"></i> Remove
+                </button>
+              </div>
+            </form>
+
+            <div id="byokFeedback" class="byok-feedback" hidden></div>
+
+            <div id="byokStatusNote" style="margin-top: 0.85rem; font-size: 0.76rem; color: var(--text-dim);">
+              <i class="fa-solid fa-circle-info"></i> Obtain a free API key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">Google AI Studio</a>.
+            </div>
+          </div>
+
           <!-- Verified Competency Profile Card -->
+
           <div class="card" style="border-top: 3px solid var(--primary);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
               <h3 style="font-size: 1.1rem; font-weight: 700;">
@@ -147,7 +188,24 @@
         </div>
 
         <!-- Right Column: Interactive AI Mentor Chat Box -->
-        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;" class="mentor-card-wrapper">
+          
+          <!-- Locked Overlay when No API Key Connected -->
+          <div class="byok-lock-overlay" id="byokLockOverlay">
+            <div class="byok-lock-icon">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+              Connect your Gemini API Key to Unlock AI Mentor
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 420px; line-height: 1.5; margin-bottom: 1.25rem;">
+              Enter a valid Google Gemini API key in the BYOK card on the left to start receiving personalized career and competency coaching.
+            </p>
+            <a href="#byokCard" class="btn btn-primary btn-sm" onclick="document.getElementById('byokApiKeyInput')?.focus();">
+              <i class="fa-solid fa-key"></i> Connect Gemini Key
+            </a>
+          </div>
+
           
           <div class="card" style="display: flex; flex-direction: column; min-height: 540px;">
             
@@ -161,7 +219,8 @@
                   <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">AI Mentor Dialogue</h3>
                   <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
                     <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green); display: inline-block;"></span>
-                    FastAPI + Gemini 2.5 Active
+                    Gemini AI Active (BYOK)
+
                   </div>
                 </div>
               </div>
@@ -257,8 +316,9 @@
                 </div>
                 <div id="errorMessageText" style="font-size: 0.85rem; line-height: 1.5; color: #fecdd3;"></div>
                 <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid rgba(244, 63, 94, 0.2); font-size: 0.78rem; color: var(--text-muted);">
-                  <strong>Troubleshooting:</strong> Ensure FastAPI is running (`python -m uvicorn main:app --reload` in `backend/`) and `GEMINI_API_KEY` is added to `backend/.env`.
+                  <strong>Troubleshooting:</strong> Ensure your Gemini API key is valid and connected in the BYOK card.
                 </div>
+
               </div>
 
             </div>
@@ -305,6 +365,7 @@
   </div>
 
   <script src="config.js?v=20260920-1"></script>
+  <script src="byok.js?v=20260921-1"></script>
   <script src="script.js?v=20260914-3"></script>
   <script src="intro.js?v=20260914-1"></script>
 </body>

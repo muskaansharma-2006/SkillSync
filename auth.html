@@ -33,7 +33,7 @@
             <label>Email<input id="signupEmail" type="email" autocomplete="email" required></label><span class="field-error" id="signupEmailError"></span>
             <label>Password<div class="password-field"><input id="signupPassword" type="password" autocomplete="new-password" required><button class="password-toggle" type="button" data-target="signupPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label><span class="field-error" id="signupPasswordError"></span>
             <label>Confirm Password<div class="password-field"><input id="signupConfirmPassword" type="password" autocomplete="new-password" required><button class="password-toggle" type="button" data-target="signupConfirmPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label><span class="field-error" id="signupConfirmPasswordError"></span>
-            <fieldset><legend>Role</legend><label class="role-choice"><input type="radio" name="signupRole" value="candidate" checked> Candidate</label><label class="role-choice"><input type="radio" name="signupRole" value="recruiter"> Recruiter</label></fieldset>
+            <fieldset><legend>Role</legend><label class="role-choice"><input type="radio" name="signupRole" value="candidate" checked> Candidate</label><label class="role-choice"><input type="radio" name="signupRole" value="recruiter"> Recruiter</label></fieldset><span class="field-error" id="signupRoleError"></span>
             <button class="btn btn-primary auth-submit" type="submit"><span>Create Account</span><i class="fa-solid fa-arrow-right"></i></button>
           </form>
           <p class="auth-switch">Already have an account? <button id="switchToLogin" class="text-button" type="button">Login</button></p>

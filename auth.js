@@ -63,11 +63,70 @@ document.querySelectorAll(".password-toggle").forEach(button => {
   });
 });
 
+function sanitizeEmail(emailStr) {
+  return (emailStr || '').replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim();
+}
+
+function isValidEmail(emailStr) {
+  const clean = sanitizeEmail(emailStr);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(clean);
+}
+
+// Real-time Confirm Password validation
+const signupPasswordInput = document.getElementById("signupPassword");
+const signupConfirmPasswordInput = document.getElementById("signupConfirmPassword");
+
+if (signupConfirmPasswordInput && signupPasswordInput) {
+  const validateConfirmMatch = () => {
+    const errorEl = document.getElementById("signupConfirmPasswordError");
+    if (!errorEl) return;
+    if (!signupConfirmPasswordInput.value) {
+      errorEl.textContent = "";
+    } else if (signupConfirmPasswordInput.value !== signupPasswordInput.value) {
+      errorEl.textContent = "Passwords do not match";
+    } else {
+      errorEl.textContent = "";
+    }
+  };
+
+  signupConfirmPasswordInput.addEventListener("input", validateConfirmMatch);
+  signupPasswordInput.addEventListener("input", () => {
+    if (signupConfirmPasswordInput.value) {
+      validateConfirmMatch();
+    }
+  });
+}
+
+// Clear inline errors as user types
+document.getElementById("signupName")?.addEventListener("input", (e) => {
+  const val = e.target.value.replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim();
+  if (val.length >= 2) {
+    const err = document.getElementById("signupNameError");
+    if (err) err.textContent = "";
+  }
+});
+
+document.getElementById("signupEmail")?.addEventListener("input", (e) => {
+  if (isValidEmail(e.target.value)) {
+    const err = document.getElementById("signupEmailError");
+    if (err) err.textContent = "";
+  }
+});
+
+document.getElementById("signupPassword")?.addEventListener("input", (e) => {
+  if (e.target.value.length >= 6) {
+    const err = document.getElementById("signupPasswordError");
+    if (err) err.textContent = "";
+  }
+});
+
 document.getElementById("loginForm").addEventListener("submit", async event => {
   event.preventDefault();
   const form = event.currentTarget;
   clearErrors(form);
-  const email = document.getElementById("loginEmail").value.trim();
+  const rawEmail = document.getElementById("loginEmail").value;
+  const email = sanitizeEmail(rawEmail);
   const password = document.getElementById("loginPassword").value;
   if (!email) document.getElementById("loginEmailError").textContent = "Enter your email.";
   if (!password) document.getElementById("loginPasswordError").textContent = "Enter your password.";
@@ -81,18 +140,55 @@ document.getElementById("signupForm").addEventListener("submit", async event => 
   event.preventDefault();
   const form = event.currentTarget;
   clearErrors(form);
-  const full_name = document.getElementById("signupName").value.trim();
-  const email = document.getElementById("signupEmail").value.trim();
+
+  const rawName = document.getElementById("signupName").value;
+  const full_name = rawName.replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim();
+  const rawEmail = document.getElementById("signupEmail").value;
+  const email = sanitizeEmail(rawEmail);
   const password = document.getElementById("signupPassword").value;
   const confirm = document.getElementById("signupConfirmPassword").value;
-  const role = document.querySelector("input[name=signupRole]:checked").value;
+  const roleElement = document.querySelector("input[name=signupRole]:checked");
+  const role = roleElement ? roleElement.value : "";
   let valid = true;
-  if (full_name.length < 2) { document.getElementById("signupNameError").textContent = "Enter your full name."; valid = false; }
-  if (!email.includes("@")) { document.getElementById("signupEmailError").textContent = "Enter a valid email."; valid = false; }
-  if (password.length < 8) { document.getElementById("signupPasswordError").textContent = "Use at least 8 characters."; valid = false; }
-  if (password !== confirm) { document.getElementById("signupConfirmPasswordError").textContent = "Passwords do not match."; valid = false; }
+
+  // 1. Full Name validation
+  if (!full_name || full_name.length < 2) {
+    document.getElementById("signupNameError").textContent = "Please enter your full name";
+    valid = false;
+  }
+
+  // 2. Email format validation
+  if (!email || !isValidEmail(email)) {
+    document.getElementById("signupEmailError").textContent = "Please enter a valid email address";
+    valid = false;
+  }
+
+  // 3. Password validation (Minimum 6 characters)
+  if (!password || password.length < 6) {
+    document.getElementById("signupPasswordError").textContent = "Password must be at least 6 characters";
+    valid = false;
+  }
+
+  // 4. Confirm Password validation
+  if (!confirm || confirm !== password) {
+    document.getElementById("signupConfirmPasswordError").textContent = "Passwords do not match";
+    valid = false;
+  }
+
+  // 5. Role safety check
+  if (!role || !["candidate", "recruiter"].includes(role)) {
+    const roleErr = document.getElementById("signupRoleError");
+    if (roleErr) roleErr.textContent = "Please select a role";
+    valid = false;
+  }
+
   if (!valid) return;
+
   setLoading(form, true);
-  try { saveSession(await sendAuth("signup", { name: full_name, full_name, email, password, role })); }
-  catch (error) { showFeedback(error.message); setLoading(form, false); }
+  try {
+    saveSession(await sendAuth("signup", { name: full_name, full_name, email, password, role }));
+  } catch (error) {
+    showFeedback(error.message);
+    setLoading(form, false);
+  }
 });

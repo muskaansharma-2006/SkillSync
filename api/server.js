@@ -90,14 +90,15 @@ async function queryList(res, table, queryBuilder) {
 app.get('/api/health', (req, res) => send(res, 200, { service: 'SkillSync API', supabase: true }));
 
 app.post('/api/auth/signup', async (req, res) => {
-  const name = (req.body?.name || req.body?.full_name || '').trim();
-  const { email, password, role = 'candidate' } = req.body || {};
-  if (!email || !password || !name || !['candidate', 'recruiter'].includes(role)) return fail(res, 400, 'Name, email, password, and a valid role are required.');
+  const name = (req.body?.name || req.body?.full_name || '').replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim();
+  const rawEmail = (req.body?.email || '').replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim().toLowerCase();
+  const { password, role = 'candidate' } = req.body || {};
+  if (!rawEmail || !password || !name || !['candidate', 'recruiter'].includes(role)) return fail(res, 400, 'Name, email, password, and a valid role are required.');
   try {
-    const { data, error } = await authClient.auth.signUp({ email: email.trim().toLowerCase(), password, options: { data: { name: name.trim(), role } } });
+    const { data, error } = await authClient.auth.signUp({ email: rawEmail, password, options: { data: { name, role } } });
     if (error) return fail(res, error.status === 422 ? 409 : 400, error.message);
     if (!data.user) return fail(res, 400, 'Account could not be created.');
-    const profile = await adminClient.from('candidates').upsert({ id: data.user.id, name: name.trim(), email: email.trim().toLowerCase(), role }, { onConflict: 'id' }).select('id,name,email,role').single();
+    const profile = await adminClient.from('candidates').upsert({ id: data.user.id, name, email: rawEmail, role }, { onConflict: 'id' }).select('id,name,email,role').single();
     if (profile.error) return safeError(res, profile.error, 'Account created, but the profile could not be initialized.');
     if (!data.session) return send(res, 200, { user: profile.data, requires_email_confirmation: true });
     res.cookie('skillsync_access_token', data.session.access_token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: data.session.expires_in * 1000 });

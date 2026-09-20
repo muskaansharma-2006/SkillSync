@@ -156,8 +156,38 @@ function renderDiscoveryQuestion() {
   nextQuestion.innerHTML = discoveryState.currentQuestion === discoveryQuestions.length - 1 ? "See My Suggestions <i class=\"fa-solid fa-compass\"></i>" : "Next <i class=\"fa-solid fa-arrow-right\"></i>";
 }
 
-function renderDiscoveryResults() {
+const getApiBaseUrl = () => (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : (window.API_BASE_URL || '')).replace(/\/$/, '');
+
+async function fetchActiveCategories() {
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/api/assessments`);
+    if (res.ok) {
+      const body = await res.json();
+      if (body.success && Array.isArray(body.data)) {
+        return new Set(body.data.map(item => (item.category || '').toLowerCase()));
+      }
+    }
+  } catch (e) {}
+  return new Set(['programming', 'data & sql', 'data', 'core cs', 'backend', 'frontend']);
+}
+
+function fieldHasAssessments(field, activeCategories) {
+  if (!field) return false;
+  const title = (field.title || '').toLowerCase();
+  const filter = (field.filter || '').toLowerCase();
+  const categoryName = (field.categoryName || '').toLowerCase();
+
+  return [...activeCategories].some(cat =>
+    cat.includes(filter) || cat.includes(title) || (categoryName && cat.includes(categoryName))
+  );
+}
+
+async function renderDiscoveryResults() {
   discoveryState.signals = { programming: 0, data: 0, core_cs: 0, backend: 0, frontend: 0 };
+  if (discoveryFields.communication) {
+    discoveryState.signals.communication = 0;
+  }
+
   discoveryState.selectedAnswers.forEach((answerIndex, questionIndex) => {
     if (answerIndex === null) return;
     discoveryQuestions[questionIndex].options[answerIndex].tags.forEach(tag => {
@@ -167,17 +197,20 @@ function renderDiscoveryResults() {
     });
   });
 
+  const activeCategories = await fetchActiveCategories();
+
   const suggestions = Object.entries(discoveryState.signals)
     .sort(([, first], [, second]) => second - first)
-    .slice(0, 3)
-    .map(([tag]) => discoveryFields[tag]);
+    .map(([tag]) => discoveryFields[tag])
+    .filter(field => fieldHasAssessments(field, activeCategories))
+    .slice(0, 3);
 
   suggestionCards.innerHTML = suggestions.map(field => `
     <article class="card card-hover-glow discovery-suggestion">
       <div class="discovery-suggestion-icon"><i class="fa-solid ${field.icon}"></i></div>
       <h3>${field.title}</h3>
       <p>${field.reason}</p>
-      <a href="assessments.html?field=${field.filter}" class="btn btn-secondary btn-sm">Explore ${field.title} Assessments <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="assessments.html?field=${field.filter}" class="btn btn-secondary btn-sm">Explore assessments <i class="fa-solid fa-arrow-right"></i></a>
     </article>
   `).join("");
 
@@ -186,10 +219,10 @@ function renderDiscoveryResults() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-nextQuestion.addEventListener("click", () => {
+nextQuestion.addEventListener("click", async () => {
   if (discoveryState.selectedAnswers[discoveryState.currentQuestion] === null) return;
   if (discoveryState.currentQuestion === discoveryQuestions.length - 1) {
-    renderDiscoveryResults();
+    await renderDiscoveryResults();
     return;
   }
   discoveryState.currentQuestion += 1;

@@ -969,6 +969,7 @@ button {
 .discovery-suggestion-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--radius-md); background: var(--accent-cyan-light); color: var(--accent-cyan); font-size: 1.2rem; }
 .discovery-suggestion h3 { margin-top: 1rem; }
 .discovery-suggestion p { min-height: 5rem; margin: 0.5rem 0 1.25rem; color: var(--text-muted); font-size: 0.84rem; line-height: 1.55; }
+.discovery-suggestion .btn { max-width: 100%; white-space: normal; text-align: center; word-break: break-word; margin-top: auto; }
 .discovery-disclaimer { display: flex; gap: 0.65rem; align-items: flex-start; margin-top: 1.25rem; padding: 1rem; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); background: var(--accent-amber-light); color: #fde68a; font-size: 0.82rem; }
 .discovery-disclaimer i { margin-top: 0.15rem; }
 .discovery-result-actions { justify-content: flex-end; margin-top: 1.25rem; }

@@ -88,7 +88,7 @@ Answer the user's question directly using their actual competency vector scores 
                 from google import genai
                 client = genai.Client(api_key=self.api_key)
                 response = client.models.generate_content(
-                    model="gemini-2.5-flash",
+                    model="gemini-3.6-flash",
                     contents=full_prompt,
                     config={
                         "system_instruction": SYSTEM_INSTRUCTION,
@@ -101,7 +101,7 @@ Answer the user's question directly using their actual competency vector scores 
                 import google.generativeai as genai
                 genai.configure(api_key=self.api_key)
                 model = genai.GenerativeModel(
-                    model_name="gemini-1.5-flash",
+                    model_name="gemini-3.6-flash",
                     system_instruction=SYSTEM_INSTRUCTION
                 )
                 response = model.generate_content(
@@ -183,7 +183,7 @@ Return strictly JSON with the following schema (no markdown block wrapper around
                 from google import genai
                 client = genai.Client(api_key=self.api_key)
                 response = client.models.generate_content(
-                    model="gemini-2.5-flash",
+                    model="gemini-3.6-flash",
                     contents=prompt,
                     config={
                         "system_instruction": "You are SkillSync AI Assessor. Output strictly valid JSON without markdown tags.",
@@ -196,7 +196,7 @@ Return strictly JSON with the following schema (no markdown block wrapper around
                 import google.generativeai as genai
                 genai.configure(api_key=self.api_key)
                 model = genai.GenerativeModel(
-                    model_name="gemini-1.5-flash",
+                    model_name="gemini-3.6-flash",
                     system_instruction="You are SkillSync AI Assessor. Output strictly valid JSON without markdown tags."
                 )
                 response = model.generate_content(
@@ -221,4 +221,3 @@ Return strictly JSON with the following schema (no markdown block wrapper around
             logger.error(f"Error calling Gemini for assessment evaluation: {str(e)}")
 
         return fallback_result
-

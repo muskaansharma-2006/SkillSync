@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import crypto from 'node:crypto';
 import express from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 
 dotenv.config({ path: new URL('../backend/.env', import.meta.url) });
@@ -9,6 +10,8 @@ dotenv.config({ path: new URL('../backend/.env', import.meta.url) });
 const app = express();
 app.set('etag', false);
 const port = Number(process.env.PORT || 3000);
+const projectRoot = fileURLToPath(new URL('../', import.meta.url));
+const aiServiceUrl = (process.env.AI_SERVICE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -22,6 +25,7 @@ const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistS
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
+app.use(express.static(projectRoot));
 
 const send = (res, statusCode, data) => res.status(statusCode).json({ success: true, data });
 const fail = (res, statusCode, message) => res.status(statusCode).json({ success: false, message });
@@ -294,7 +298,7 @@ app.post('/api/assessment-attempts/:attemptId/submit', requireUser, async (req, 
     };
 
     try {
-      const aiRes = await fetch('http://127.0.0.1:8000/api/ai/evaluate', {
+      const aiRes = await fetch(`${aiServiceUrl}/api/ai/evaluate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -513,5 +517,17 @@ app.post('/api/field-discovery', requireUser, async (req, res) => queryList(res,
 app.get('/api/field-discovery/:candidateId', requireUser, async (req, res) => { if (!ownCandidate(req, res, req.params.candidateId)) return; res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private'); return queryList(res, 'field_discovery_responses', adminClient.from('field_discovery_responses').select('*').eq('candidate_id', req.params.candidateId).order('created_at', { ascending: false })); });
 app.post('/api/feedback', async (req, res) => queryList(res, 'feedback', adminClient.from('feedback').insert(req.body).select().single()));
 app.get('/api/feedback', async (req, res) => queryList(res, 'feedback', adminClient.from('feedback').select('*').order('created_at', { ascending: false })));
-
+app.post('/api/ai/mentor', requireUser, async (req, res) => {
+  try {
+    const aiRes = await fetch(`${aiServiceUrl}/api/ai/mentor`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    const data = await aiRes.json();
+    return res.status(aiRes.status).json(data);
+  } catch (err) {
+    return fail(res, 503, 'AI Mentor service is temporarily unavailable.');
+  }
+});
 app.listen(port, () => console.log(`SkillSync API listening on http://127.0.0.1:${port}`));

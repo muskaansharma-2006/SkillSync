@@ -17,12 +17,30 @@ const adminClient = createClient(supabaseUrl, serviceRoleKey, {
 
 const assessments = [
   {
-    title: 'Python Practical Competency',
+    title: 'Python Level 1 — Beginner Foundations',
+    category: 'Programming',
+    difficulty: 'Beginner',
+    duration_minutes: 15,
+    challenge_count: 5,
+    description: 'Assess foundational Python programming language concepts: dynamic variables, division operators, string immutability, loops, and function syntax.',
+    is_active: true
+  },
+  {
+    title: 'Python Level 2 — Intermediate Competency',
     category: 'Programming',
     difficulty: 'Intermediate',
+    duration_minutes: 25,
+    challenge_count: 5,
+    description: 'Evaluate intermediate Python programming: mutable defaults, list comprehensions, dict safe access, try-except-finally, and context managers.',
+    is_active: true
+  },
+  {
+    title: 'Python Level 3 — Advanced Mastery',
+    category: 'Programming',
+    difficulty: 'Advanced',
     duration_minutes: 30,
-    challenge_count: 8,
-    description: 'Assess practical Python ability through realistic coding, error handling, and data processing scenarios.',
+    challenge_count: 5,
+    description: 'Assess advanced Python core mechanics: OOP dunder methods, function decorators, generator iterators, GIL concurrency locks, and custom context managers.',
     is_active: true
   },
   {

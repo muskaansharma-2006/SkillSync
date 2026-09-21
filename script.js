@@ -796,6 +796,243 @@ async function initPracticePage() {
 // 3. GUIDED MCQ PRACTICAL ASSESSMENT SIMULATION (assessment.html)
 
 const MCQ_DATABASE = {
+  python_level1: {
+    skillTitle: "Python Level 1 — Beginner Foundations",
+    categoryLabel: "Python Programming (Level 1)",
+    questions: [
+      {
+        id: 1,
+        difficulty: "Beginner",
+        title: "1. Dynamic Variable Binding & Types",
+        description: "In Python, what happens when you execute `x = 10` followed immediately by `x = 'Hello'`?",
+        codeSnippet: `x = 10\nx = 'Hello'\nprint(type(x))`,
+        options: [
+          "Raises a TypeError because x was declared as an integer.",
+          "Python dynamically rebinds x to the string object 'Hello', so type(x) returns <class 'str'>.",
+          "x becomes a tuple containing (10, 'Hello').",
+          "Compilation fails due to missing static type annotations."
+        ],
+        correctIndex: 1,
+        subtopic: "Python"
+      },
+      {
+        id: 2,
+        difficulty: "Beginner",
+        title: "2. Floor Division vs Floating-Point Division",
+        description: "What are the exact output values when evaluating `print(7 // 2)` and `print(7 / 2)` in Python 3?",
+        codeSnippet: `print(7 // 2)\nprint(7 / 2)`,
+        options: [
+          "3 and 3.5",
+          "3.5 and 3.5",
+          "3 and 3",
+          "3.5 and 3"
+        ],
+        correctIndex: 0,
+        subtopic: "Python"
+      },
+      {
+        id: 3,
+        difficulty: "Beginner",
+        title: "3. String Immutability & Method Behavior",
+        description: "Strings in Python are immutable. What does `print(text)` output after running `text = 'python'; text.upper()`?",
+        codeSnippet: `text = 'python'\ntext.upper()\nprint(text)`,
+        options: [
+          "'PYTHON'",
+          "'python', because .upper() returns a new string and does not mutate text in-place.",
+          "None",
+          "Raises an AttributeError."
+        ],
+        correctIndex: 1,
+        subtopic: "Python"
+      },
+      {
+        id: 4,
+        difficulty: "Beginner",
+        title: "4. For Loop Iteration with range()",
+        description: "How many total numbers will be printed by executing the loop `for i in range(1, 5): print(i)`?",
+        codeSnippet: `for i in range(1, 5):\n    print(i)`,
+        options: [
+          "5 numbers: 1, 2, 3, 4, 5",
+          "4 numbers: 1, 2, 3, 4",
+          "5 numbers: 0, 1, 2, 3, 4",
+          "3 numbers: 2, 3, 4"
+        ],
+        correctIndex: 1,
+        subtopic: "Algorithms"
+      },
+      {
+        id: 5,
+        difficulty: "Beginner",
+        title: "5. Defining Reusable Functions",
+        description: "Which keyword is used to define a reusable function block in standard Python syntax?",
+        options: [
+          "function calculate_total():",
+          "def calculate_total():",
+          "fn calculate_total():",
+          "declare calculate_total():"
+        ],
+        correctIndex: 1,
+        subtopic: "Communication"
+      }
+    ]
+  },
+  python_level2: {
+    skillTitle: "Python Level 2 — Intermediate Competency",
+    categoryLabel: "Python Programming (Level 2)",
+    questions: [
+      {
+        id: 1,
+        difficulty: "Intermediate",
+        title: "1. Mutable Default Arguments in Function Definitions",
+        description: "In a payment microservice, a developer wrote `def process_transactions(items, history=[])`. On subsequent calls where `history` is omitted, previous transaction entries persist in the list. What is the root cause?",
+        codeSnippet: `def process_transactions(item, history=[]):\n    history.append(item)\n    return history\n\nprint(process_transactions('TX101')) # ['TX101']\nprint(process_transactions('TX102')) # ['TX101', 'TX102'] -- Unexpected state leak!`,
+        options: [
+          "Python re-evaluates default arguments on every invocation; copy the list using history.copy().",
+          "Default argument expressions are evaluated once when the function is defined, causing the mutable list to be shared across all calls. Use history=None and set history = [] inside the function.",
+          "Lists are passed by value in Python; declare global history inside the function body.",
+          "The GIL locks default parameters across worker threads; replace the list with a tuple."
+        ],
+        correctIndex: 1,
+        subtopic: "Python"
+      },
+      {
+        id: 2,
+        difficulty: "Intermediate",
+        title: "2. Filtering with List Comprehensions",
+        description: "Which expression constructs a list containing the squares of even numbers from 0 through 9?",
+        codeSnippet: `# Input range: range(10)`,
+        options: [
+          "[x * 2 for x in range(10) if x % 2 == 0]",
+          "[x**2 for x in range(10) if x % 2 == 0]",
+          "{x^2 for x in range(10) where x % 2 == 0}",
+          "[x**2 for x in range(10) while x % 2 == 0]"
+        ],
+        correctIndex: 1,
+        subtopic: "Algorithms"
+      },
+      {
+        id: 3,
+        difficulty: "Intermediate",
+        title: "3. Dictionary Safe Access: [] vs .get()",
+        description: "What occurs when attempting to access a missing key using `data['missing']` versus `data.get('missing', 0)`?",
+        codeSnippet: `data = {'a': 1}\nval1 = data.get('b', 0)\nval2 = data['b']`,
+        options: [
+          "Both return None silently.",
+          "data.get() returns 0, whereas data['b'] raises a KeyError.",
+          "Both raise a KeyError exception.",
+          "data['b'] automatically inserts 'b': None into the dictionary."
+        ],
+        correctIndex: 1,
+        subtopic: "Debugging"
+      },
+      {
+        id: 4,
+        difficulty: "Intermediate",
+        title: "4. Resource Management with the 'with' Statement",
+        description: "Why is `with open('data.txt') as f:` preferred over `f = open('data.txt')` when reading files?",
+        options: [
+          "It speeds up disk reads by enabling asynchronous thread buffering.",
+          "It guarantees that the file handle is closed automatically when exiting the block, even if an exception occurs.",
+          "It parses file content into a native Python dictionary automatically.",
+          "It locks file permissions against operating system process modifications."
+        ],
+        correctIndex: 1,
+        subtopic: "Data Analysis"
+      },
+      {
+        id: 5,
+        difficulty: "Intermediate",
+        title: "5. Try-Except-Finally Execution Rules",
+        description: "In Python exception handling, when does the `finally` block in `try...except...finally` execute?",
+        options: [
+          "Only if an exception occurs inside the try block.",
+          "Only if no exception occurs inside the try block.",
+          "Always, regardless of whether an exception was raised or caught.",
+          "Only if the exception is of type SystemExit."
+        ],
+        correctIndex: 2,
+        subtopic: "Communication"
+      }
+    ]
+  },
+  python_level3: {
+    skillTitle: "Python Level 3 — Advanced Mastery",
+    categoryLabel: "Python Programming (Level 3)",
+    questions: [
+      {
+        id: 1,
+        difficulty: "Advanced",
+        title: "1. Decorator Execution Mechanics",
+        description: "How does applying the `@timer` decorator above `def my_func():` modify how `my_func` executes?",
+        codeSnippet: `@timer\ndef my_func():\n    pass`,
+        options: [
+          "It compiles my_func into native C machine code prior to execution.",
+          "It passes my_func into timer(my_func), replacing my_func with a wrapper function that can execute pre/post logic.",
+          "It executes my_func inside a separate operating system thread asynchronously.",
+          "It freezes the global namespace to prevent variable mutations."
+        ],
+        correctIndex: 1,
+        subtopic: "Python"
+      },
+      {
+        id: 2,
+        difficulty: "Advanced",
+        title: "2. Dunder Methods: __str__ vs __repr__",
+        description: "In Python OOP, what is the core architectural difference between `__str__` and `__repr__`?",
+        options: [
+          "__str__ provides human-readable output for end users, whereas __repr__ provides an unambiguous representation for developers and debugging.",
+          "__str__ converts objects to JSON strings, whereas __repr__ outputs hexadecimal memory addresses.",
+          "__repr__ is called by print(), whereas __str__ is only called inside REPL environments.",
+          "__str__ was deprecated in Python 3.11 in favor of dataclasses."
+        ],
+        correctIndex: 0,
+        subtopic: "Debugging"
+      },
+      {
+        id: 3,
+        difficulty: "Advanced",
+        title: "3. Generators & Lazy Evaluation with 'yield'",
+        description: "What happens when a Python function containing the `yield` keyword is invoked?",
+        codeSnippet: `def generate_numbers():\n    yield 1\n    yield 2\n\ng = generate_numbers()`,
+        options: [
+          "It immediately runs the entire function and returns a list [1, 2].",
+          "It returns a generator iterator object without executing the function body until next(g) is called.",
+          "It raises a SyntaxError unless defined inside a class structure.",
+          "It spawns a background thread that prints 1 and 2."
+        ],
+        correctIndex: 1,
+        subtopic: "Algorithms"
+      },
+      {
+        id: 4,
+        difficulty: "Advanced",
+        title: "4. Global Interpreter Lock (GIL) Constraints",
+        description: "Why does Python's standard CPython implementation prevent multi-threaded CPU-bound algorithms from scaling across multiple CPU cores?",
+        options: [
+          "Threads in Python cannot access physical system RAM.",
+          "The Global Interpreter Lock (GIL) enforces a mutex locking bytecode execution to a single OS thread at any time.",
+          "Python threads only run inside web browser WebWorker instances.",
+          "Hardware CPU cores require statically typed C++ pointers."
+        ],
+        correctIndex: 1,
+        subtopic: "Data Analysis"
+      },
+      {
+        id: 5,
+        difficulty: "Advanced",
+        title: "5. Context Manager __exit__ Exceptions",
+        description: "What parameter tuple is passed to a custom `__exit__(self, exc_type, exc_val, exc_tb)` method when an exception occurs inside a `with` block?",
+        options: [
+          "No parameters; __exit__ only receives self.",
+          "The exception class type, the exception instance value, and the traceback object.",
+          "A boolean True if execution succeeded or False if failed.",
+          "The OS file descriptor integer and byte offset."
+        ],
+        correctIndex: 1,
+        subtopic: "Communication"
+      }
+    ]
+  },
   python: {
     skillTitle: "Python Practical & Conceptual Assessment",
     categoryLabel: "Python Programming",
@@ -1192,7 +1429,13 @@ function initPracticalAssessmentSimulation() {
   const urlParams = new URLSearchParams(window.location.search);
   const rawSkill = (urlParams.get("skill") || urlParams.get("category") || "python").toLowerCase();
   
-  if (rawSkill.includes("sql") || rawSkill.includes("data")) {
+  if (rawSkill.includes("level1") || rawSkill.includes("level_1") || rawSkill.includes("beginner") || rawSkill === "python_1") {
+    currentMcqCategory = "python_level1";
+  } else if (rawSkill.includes("level3") || rawSkill.includes("level_3") || rawSkill.includes("advanced") || rawSkill === "python_3") {
+    currentMcqCategory = "python_level3";
+  } else if (rawSkill.includes("level2") || rawSkill.includes("level_2") || rawSkill.includes("intermediate") || rawSkill === "python_2" || rawSkill === "python") {
+    currentMcqCategory = "python_level2";
+  } else if (rawSkill.includes("sql") || rawSkill.includes("data")) {
     currentMcqCategory = "sql";
   } else if (rawSkill.includes("frontend") || rawSkill.includes("ui") || rawSkill.includes("ux")) {
     currentMcqCategory = "frontend";
@@ -1201,7 +1444,7 @@ function initPracticalAssessmentSimulation() {
   } else if (rawSkill.includes("core") || rawSkill.includes("cs") || rawSkill.includes("logic") || rawSkill.includes("problem")) {
     currentMcqCategory = "core_cs";
   } else {
-    currentMcqCategory = "python";
+    currentMcqCategory = "python_level1";
   }
 
   const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python;

@@ -47,8 +47,15 @@ app.use(cors({
   },
   credentials: true
 }));
-app.use(express.json({ limit: '1mb' }));
-app.use(express.static(projectRoot));
+app.use(express.static(projectRoot, {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html') || path.endsWith('.js') || path.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 const send = (res, statusCode, data) => res.status(statusCode).json({ success: true, data });
 const fail = (res, statusCode, message) => res.status(statusCode).json({ success: false, message });

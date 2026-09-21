@@ -1,9 +1,54 @@
-const GEMINI_MODEL = 'gemini-1.5-flash';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const GEMINI_PRIMARY_MODEL = 'gemini-2.5-flash';
+const GEMINI_FALLBACK_MODEL = 'gemini-2.5-flash-lite';
+
+function getApiUrl(modelName, apiKey) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+}
+
+/**
+ * Helper to call Gemini API using GEMINI_PRIMARY_MODEL with fallback to GEMINI_FALLBACK_MODEL.
+ */
+async function callGeminiApi(apiKey, requestBody) {
+  const cleanKey = apiKey.trim();
+  const primaryUrl = getApiUrl(GEMINI_PRIMARY_MODEL, cleanKey);
+  
+  let response;
+  try {
+    response = await fetch(primaryUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+  } catch (netErr) {
+    const err = new Error('Failed to reach Gemini API. Please check your network connection.');
+    err.code = 'NETWORK_ERROR';
+    throw err;
+  }
+
+  // If primary model (gemini-2.5-flash) returned a non-200 error, attempt fallback to gemini-2.5-flash-lite
+  if (!response.ok) {
+    console.warn(`[GeminiProvider] Primary model ${GEMINI_PRIMARY_MODEL} returned status ${response.status}. Retrying with fallback model ${GEMINI_FALLBACK_MODEL}...`);
+    try {
+      const fallbackUrl = getApiUrl(GEMINI_FALLBACK_MODEL, cleanKey);
+      const fallbackResponse = await fetch(fallbackUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+      if (fallbackResponse.ok) {
+        return fallbackResponse;
+      }
+    } catch (_) {
+      // Fallback network call failed, proceed with original response for error extraction
+    }
+  }
+
+  return response;
+}
 
 /**
  * Tests if the provided Gemini API key is valid by making a lightweight API call.
- * @param {string} apiKey 
+ * @param {string} [apiKey] 
  * @returns {Promise<{ success: boolean }>}
  */
 export async function testKey(apiKey) {
@@ -16,22 +61,9 @@ export async function testKey(apiKey) {
     throw err;
   }
 
-  const url = `${GEMINI_API_URL}?key=${keyToUse}`;
-
-  let response;
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: 'Ping test' }] }]
-      })
-    });
-  } catch (netErr) {
-    const err = new Error('Failed to reach Gemini API. Please check your network connection.');
-    err.code = 'NETWORK_ERROR';
-    throw err;
-  }
+  const response = await callGeminiApi(keyToUse, {
+    contents: [{ parts: [{ text: 'Ping test' }] }]
+  });
 
   if (response.ok) {
     return { success: true };
@@ -82,7 +114,6 @@ export async function generateResponse({ apiKey, prompt, systemInstruction }) {
     throw err;
   }
 
-  const url = `${GEMINI_API_URL}?key=${keyToUse}`;
   const requestBody = {
     contents: [{ parts: [{ text: prompt }] }]
   };
@@ -93,18 +124,7 @@ export async function generateResponse({ apiKey, prompt, systemInstruction }) {
     };
   }
 
-  let response;
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
-    });
-  } catch (netErr) {
-    const err = new Error('Network error reaching Gemini AI service.');
-    err.code = 'NETWORK_ERROR';
-    throw err;
-  }
+  const response = await callGeminiApi(keyToUse, requestBody);
 
   if (!response.ok) {
     let errorDetails = {};

@@ -27,6 +27,10 @@ window.BYOKManager = (function () {
 
   async function checkKeyStatus() {
     setStatus('connecting', statusState.hasKey);
+    let newStatus = 'disconnected';
+    let hasKey = false;
+    let updatedAt = null;
+
     try {
       const res = await fetch(getApiUrl('/api/user/key-status'), {
         method: 'GET',
@@ -36,13 +40,14 @@ window.BYOKManager = (function () {
       if (res.ok) {
         const json = await res.json();
         const data = json.data || json;
-        setStatus(data.status || (data.hasKey ? 'connected' : 'disconnected'), !!data.hasKey, data.updatedAt);
-      } else {
-        setStatus('disconnected', false);
+        hasKey = !!data.hasKey;
+        updatedAt = data.updatedAt || null;
+        newStatus = data.status || (hasKey ? 'connected' : 'disconnected');
       }
     } catch (err) {
       console.error('Failed to check API key status:', err);
-      setStatus('disconnected', false);
+    } finally {
+      setStatus(newStatus, hasKey, updatedAt);
     }
   }
 
@@ -55,6 +60,11 @@ window.BYOKManager = (function () {
     setStatus('connecting');
     showFeedback('Testing & encrypting API key with Gemini service...', 'info');
 
+    let targetStatus = 'invalid';
+    let targetHasKey = false;
+    let targetUpdatedAt = null;
+    let success = false;
+
     try {
       const res = await fetch(getApiUrl('/api/user/api-key'), {
         method: 'POST',
@@ -66,27 +76,28 @@ window.BYOKManager = (function () {
       const json = await res.json().catch(() => ({}));
 
       if (res.ok && json.success) {
-        setStatus('connected', true, new Date().toISOString());
-        showFeedback('Gemini API Key connected successfully! AI Mentor is unlocked.', 'success');
+        targetStatus = 'connected';
+        targetHasKey = true;
+        targetUpdatedAt = new Date().toISOString();
+        showFeedback('Gemini API Key connected successfully!', 'success');
         const input = document.getElementById('byokApiKeyInput');
         if (input) input.value = '';
-        return true;
+        success = true;
       } else {
         const errMsg = json.message || 'Failed to validate or save API key.';
-        if (res.status === 429 || errMsg.toLowerCase().includes('quota') || errMsg.toLowerCase().includes('rate')) {
-          setStatus('rate_limited', false);
-        } else {
-          setStatus('invalid', false);
-        }
+        targetStatus = (res.status === 429 || errMsg.toLowerCase().includes('quota') || errMsg.toLowerCase().includes('rate'))
+          ? 'rate_limited'
+          : 'invalid';
         showFeedback(errMsg, 'error');
-        return false;
       }
     } catch (err) {
       console.error('BYOK Connect error:', err);
-      setStatus('invalid', false);
+      targetStatus = 'invalid';
       showFeedback('Network error while connecting API key. Please try again.', 'error');
-      return false;
+    } finally {
+      setStatus(targetStatus, targetHasKey, targetUpdatedAt);
     }
+    return success;
   }
 
   async function removeKey() {
@@ -95,6 +106,10 @@ window.BYOKManager = (function () {
     }
 
     setStatus('connecting');
+    let targetStatus = 'disconnected';
+    let targetHasKey = false;
+    let targetUpdatedAt = null;
+
     try {
       const res = await fetch(getApiUrl('/api/user/api-key'), {
         method: 'DELETE',
@@ -103,17 +118,20 @@ window.BYOKManager = (function () {
       });
 
       if (res.ok) {
-        setStatus('disconnected', false, null);
         showFeedback('API Key removed.', 'info');
       } else {
         const json = await res.json().catch(() => ({}));
         showFeedback(json.message || 'Failed to remove API key.', 'error');
-        setStatus('connected', true);
+        targetStatus = 'connected';
+        targetHasKey = true;
       }
     } catch (err) {
       console.error('BYOK Remove error:', err);
       showFeedback('Network error while removing key.', 'error');
-      setStatus('connected', true);
+      targetStatus = 'connected';
+      targetHasKey = true;
+    } finally {
+      setStatus(targetStatus, targetHasKey, targetUpdatedAt);
     }
   }
 

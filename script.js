@@ -2415,6 +2415,139 @@ function initHistoryPage() {
   renderTrendChart("historyTrendChart");
 }
 
+// Clean Markdown to HTML Parser (strips raw asterisks, hashtags, backticks)
+function renderCleanMarkdown(markdownText) {
+  if (!markdownText) return "";
+  
+  let html = markdownText.trim();
+  
+  // Code blocks: ```lang ... ```
+  html = html.replace(/```(?:[a-z]*)\n([\s\S]*?)```/g, (match, code) => {
+    const escaped = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `<div style="background: #050811; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; font-family: var(--font-code); font-size: 0.85rem; color: #e2e8f0; margin: 0.85rem 0; overflow-x: auto; white-space: pre; line-height: 1.5;">${escaped}</div>`;
+  });
+
+  // Inline code: `code`
+  html = html.replace(/`([^`]+)`/g, '<code style="background: rgba(255,255,255,0.08); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: var(--font-code); color: var(--accent-cyan); font-size: 0.88em;">$1</code>');
+
+  // Headings: ### Heading, ## Heading, # Heading
+  html = html.replace(/^### (.*$)/gim, '<h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin: 1rem 0 0.5rem; display: flex; align-items: center; gap: 0.4rem;"><i class="fa-solid fa-chevron-right" style="color: var(--accent-cyan); font-size: 0.8rem;"></i> $1</h4>');
+  html = html.replace(/^## (.*$)/gim, '<h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 1.1rem 0 0.6rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem;">$1</h3>');
+  html = html.replace(/^# (.*$)/gim, '<h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 1.2rem 0 0.6rem;">$1</h2>');
+
+  // Bold text: **text** or __text__
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--text-main); font-weight: 700;">$1</strong>');
+  html = html.replace(/__(.*?)__/g, '<strong style="color: var(--text-main); font-weight: 700;">$1</strong>');
+
+  // Italic text: *text* or _text_
+  html = html.replace(/\*(.*?)\*/g, '<em style="color: #cbd5e1;">$1</em>');
+
+  // Lists: lines starting with * or - or numbers
+  const lines = html.split('\n');
+  let inList = false;
+  let resultLines = [];
+
+  lines.forEach(line => {
+    const listMatch = line.match(/^[\*\-]\s+(.*)/);
+    const numMatch = line.match(/^(\d+)\.\s+(.*)/);
+
+    if (listMatch) {
+      if (!inList) {
+        resultLines.push('<ul style="list-style: none; padding-left: 0; margin: 0.75rem 0; display: flex; flex-direction: column; gap: 0.4rem;">');
+        inList = true;
+      }
+      resultLines.push(`<li style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.9rem; line-height: 1.5;"><i class="fa-solid fa-circle-dot" style="color: var(--accent-cyan); font-size: 0.5rem; margin-top: 0.55rem; flex-shrink: 0;"></i> <span>${listMatch[1]}</span></li>`);
+    } else if (numMatch) {
+      if (!inList) {
+        resultLines.push('<ol style="list-style: none; padding-left: 0; margin: 0.75rem 0; display: flex; flex-direction: column; gap: 0.5rem;">');
+        inList = true;
+      }
+      resultLines.push(`<li style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; line-height: 1.5;"><span style="background: rgba(99, 102, 241, 0.2); color: var(--primary); font-weight: 800; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; margin-top: 0.1rem;">${numMatch[1]}</span> <span>${numMatch[2]}</span></li>`);
+    } else {
+      if (inList) {
+        resultLines.push('</ul>');
+        inList = false;
+      }
+      if (line.trim().length > 0 && !line.trim().startsWith('<h') && !line.trim().startsWith('<div')) {
+        resultLines.push(`<p style="margin-bottom: 0.75rem; line-height: 1.65;">${line}</p>`);
+      } else {
+        resultLines.push(line);
+      }
+    }
+  });
+
+  if (inList) resultLines.push('</ul>');
+
+  return resultLines.join('\n');
+}
+
+// Global Voice Assistant State
+let isAutoVoiceEnabled = true;
+let lastRawAnswerText = "";
+
+function speakMentorResponse(rawText) {
+  if (!('speechSynthesis' in window)) {
+    showToast("Voice output is not supported in this browser.", "info");
+    return;
+  }
+
+  // Stop previous speech
+  window.speechSynthesis.cancel();
+
+  // Clean raw markdown symbols for smooth, natural speech output
+  let speakableText = rawText
+    .replace(/```[\s\S]*?```/g, " . Code snippet provided in text response . ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/[\*#_~`>-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!speakableText) return;
+
+  const utterance = new SpeechSynthesisUtterance(speakableText);
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
+
+  // Choose clear English voice if available
+  const voices = window.speechSynthesis.getVoices();
+  const selectedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('David'))) || voices.find(v => v.lang.startsWith('en'));
+  if (selectedVoice) utterance.voice = selectedVoice;
+
+  const speakBtn = document.getElementById("speakMentorBtn");
+  if (speakBtn) {
+    speakBtn.innerHTML = `<i class="fa-solid fa-circle-stop" style="color: #f43f5e;"></i> Stop Voice`;
+    speakBtn.className = "btn btn-secondary btn-sm";
+  }
+
+  utterance.onend = () => {
+    if (speakBtn) {
+      speakBtn.innerHTML = `<i class="fa-solid fa-volume-high"></i> Listen Voice`;
+      speakBtn.className = "btn btn-cyan btn-sm";
+    }
+  };
+
+  utterance.onerror = () => {
+    if (speakBtn) {
+      speakBtn.innerHTML = `<i class="fa-solid fa-volume-high"></i> Listen Voice`;
+      speakBtn.className = "btn btn-cyan btn-sm";
+    }
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopMentorVoice() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  const speakBtn = document.getElementById("speakMentorBtn");
+  if (speakBtn) {
+    speakBtn.innerHTML = `<i class="fa-solid fa-volume-high"></i> Listen Voice`;
+    speakBtn.className = "btn btn-cyan btn-sm";
+  }
+}
+
 // 10. GEMINI AI MENTOR PAGE (mentor.html)
 function initAIMentorPage() {
   const form = document.getElementById("mentorForm");
@@ -2431,11 +2564,97 @@ function initAIMentorPage() {
   const answerContent = document.getElementById("aiAnswerContent");
   const errorText = document.getElementById("errorMessageText");
 
-  // Initialize BYOK manager component (optional custom key)
+  const speakBtn = document.getElementById("speakMentorBtn");
+  const autoVoiceToggle = document.getElementById("autoVoiceToggle");
+  const micBtn = document.getElementById("micInputBtn");
+
+  // Initialize BYOK manager component
   if (typeof window.BYOKManager !== 'undefined') {
     window.BYOKManager.init({
       containerId: 'byokCard'
     });
+  }
+
+  // Voice output Listen button
+  if (speakBtn) {
+    speakBtn.addEventListener("click", () => {
+      if (window.speechSynthesis && window.speechSynthesis.speaking) {
+        stopMentorVoice();
+      } else if (lastRawAnswerText) {
+        speakMentorResponse(lastRawAnswerText);
+      } else {
+        showToast("No active response to speak.", "info");
+      }
+    });
+  }
+
+  // Auto-Voice toggle button
+  if (autoVoiceToggle) {
+    autoVoiceToggle.addEventListener("click", () => {
+      isAutoVoiceEnabled = !isAutoVoiceEnabled;
+      if (isAutoVoiceEnabled) {
+        autoVoiceToggle.className = "badge badge-purple";
+        autoVoiceToggle.innerHTML = `<i class="fa-solid fa-microphone-lines"></i> Auto-Voice: ON`;
+        showToast("Auto-voice response playback enabled", "success");
+      } else {
+        autoVoiceToggle.className = "badge badge-secondary";
+        autoVoiceToggle.innerHTML = `<i class="fa-solid fa-microphone-slash"></i> Auto-Voice: OFF`;
+        stopMentorVoice();
+        showToast("Auto-voice response playback disabled", "info");
+      }
+    });
+  }
+
+  // Speech Recognition Microphone Input
+  if (micBtn && input) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      let isListening = false;
+
+      micBtn.addEventListener("click", () => {
+        if (isListening) {
+          recognition.stop();
+        } else {
+          try {
+            recognition.start();
+            isListening = true;
+            micBtn.innerHTML = `<i class="fa-solid fa-microphone fa-beat" style="color: #f43f5e;"></i>`;
+            micBtn.title = "Listening... Speak your question into microphone";
+            showToast("Listening... Speak your question into your microphone", "info");
+          } catch (e) {
+            console.error("Speech recognition error:", e);
+          }
+        }
+      });
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        if (transcript) {
+          input.value = transcript;
+          showToast(`Voice captured: "${transcript}"`, "success");
+          submitMentorQuestion(transcript);
+        }
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        micBtn.innerHTML = `<i class="fa-solid fa-microphone" style="color: var(--accent-cyan);"></i>`;
+        micBtn.title = "Speak question using microphone";
+      };
+
+      recognition.onerror = (event) => {
+        isListening = false;
+        micBtn.innerHTML = `<i class="fa-solid fa-microphone" style="color: var(--accent-cyan);"></i>`;
+        showToast(`Voice capture note: ${event.error}`, "info");
+      };
+    } else {
+      micBtn.title = "Microphone input not supported on this browser";
+    }
   }
 
   // Suggested questions click handler
@@ -2453,6 +2672,7 @@ function initAIMentorPage() {
   // Clear / Reset chat
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
+      stopMentorVoice();
       if (input) input.value = "";
       if (emptyState) emptyState.style.display = "block";
       if (loadingState) loadingState.style.display = "none";
@@ -2477,6 +2697,8 @@ function initAIMentorPage() {
   // Submit question to backend
   async function submitMentorQuestion(question) {
     if (!question) return;
+
+    stopMentorVoice();
 
     // Set UI to loading state
     if (emptyState) emptyState.style.display = "none";
@@ -2525,8 +2747,17 @@ function initAIMentorPage() {
         if (responseBox) responseBox.style.display = "block";
         if (questionText) questionText.textContent = question;
         const answer = data.data?.response || data.data?.answer || data.answer || data.response;
-        if (answerContent) answerContent.textContent = answer;
-        showToast("Gemini AI Mentor response generated successfully!", "success");
+        lastRawAnswerText = answer;
+        
+        // Render formatted HTML without raw asterisks/hashtags
+        if (answerContent) answerContent.innerHTML = renderCleanMarkdown(answer);
+
+        // Auto Voice Output if enabled
+        if (isAutoVoiceEnabled) {
+          speakMentorResponse(answer);
+        }
+
+        showToast("Gemini AI Mentor response generated!", "success");
       } else {
         if (errorState) errorState.style.display = "block";
         const errMsg = data.message || "AI service encountered an issue. Please check your API key.";

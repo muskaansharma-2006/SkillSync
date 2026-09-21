@@ -274,21 +274,31 @@
               <div id="mentorResponseBox" style="display: none;">
                 <div style="display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; background: rgba(99, 102, 241, 0.1); padding: 0.85rem 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
                   <i class="fa-solid fa-user" style="color: var(--primary); margin-top: 0.2rem;"></i>
-                  <div>
+                  <div style="flex: 1;">
                     <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Your Question</div>
                     <div id="userQuestionText" style="font-size: 0.92rem; font-weight: 600; color: var(--text-main); margin-top: 0.15rem;"></div>
                   </div>
                 </div>
 
                 <div style="display: flex; align-items: flex-start; gap: 0.75rem; background: rgba(17, 24, 39, 0.9); padding: 1.1rem; border-radius: var(--radius-md); border: 1px solid var(--border-highlight);">
-                  <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--accent-cyan); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
+                  <div style="width: 34px; height: 34px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--accent-cyan), var(--primary)); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
                     <i class="fa-solid fa-robot"></i>
                   </div>
-                  <div style="flex: 1;">
-                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 0.4rem;">
-                      Gemini AI Mentor Analysis
+                  <div style="flex: 1; overflow-x: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+                      <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI Mentor Voice & Vector Analysis
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button id="speakMentorBtn" type="button" class="btn btn-cyan btn-sm" style="padding: 0.25rem 0.65rem; font-size: 0.78rem;">
+                          <i class="fa-solid fa-volume-high"></i> Listen Voice
+                        </button>
+                        <span id="autoVoiceToggle" class="badge badge-purple" style="cursor: pointer;" title="Toggle Auto-Voice Output">
+                          <i class="fa-solid fa-microphone-lines"></i> Auto-Voice: ON
+                        </span>
+                      </div>
                     </div>
-                    <div id="aiAnswerContent" style="font-size: 0.9rem; color: #e2e8f0; line-height: 1.65; white-space: pre-wrap;"></div>
+                    <div id="aiAnswerContent" style="font-size: 0.92rem; color: #e2e8f0; line-height: 1.65;"></div>
                   </div>
                 </div>
               </div>
@@ -310,14 +320,17 @@
 
             <!-- Input Controls Area -->
             <form id="mentorForm" style="display: flex; gap: 0.75rem; align-items: center;">
-              <div style="position: relative; flex: 1;">
+              <div style="position: relative; flex: 1; display: flex; align-items: center; gap: 0.5rem;">
                 <input 
                   type="text" 
                   id="mentorQuestionInput" 
-                  placeholder="Ask why a score is low or what to improve next..." 
-                  style="width: 100%; padding: 0.85rem 1rem; background: var(--bg-card-light); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.9rem; transition: var(--transition);"
+                  placeholder="Ask why a score is low or speak via microphone..." 
+                  style="flex: 1; padding: 0.85rem 1rem; background: var(--bg-card-light); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.9rem; transition: var(--transition);"
                   autocomplete="off"
                 />
+                <button type="button" id="micInputBtn" class="btn btn-secondary" title="Speak question using microphone" style="padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa-solid fa-microphone" style="color: var(--accent-cyan);"></i>
+                </button>
               </div>
               <button type="submit" id="sendMentorBtn" class="btn btn-primary" style="padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
                 <span>Send</span>

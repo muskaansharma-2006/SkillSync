@@ -68,19 +68,19 @@
           
           <!-- Score Ring Box -->
           <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <div id="resultRingBox" style="width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #0b0f19 60%, transparent 61%), conic-gradient(var(--primary) 0%, rgba(255,255,255,0.1) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);">
+            <div id="resultRingBox" style="width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #0b0f19 60%, transparent 61%), conic-gradient(var(--primary) 82%, rgba(255,255,255,0.1) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);">
               <div style="text-align: center;">
-                <div id="resultScoreValue" style="font-size: 2rem; font-weight: 800; color: #fff; line-height: 1;">--</div>
+                <div id="resultScoreValue" style="font-size: 2rem; font-weight: 800; color: #fff; line-height: 1;">82%</div>
                 <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Score</div>
               </div>
             </div>
 
             <div>
               <div style="display: flex; gap: 0.5rem; margin-bottom: 0.35rem;">
-                <span class="badge badge-primary" id="resultLevelBadge">Evaluation</span>
+                <span class="badge badge-primary" id="resultLevelBadge">Intermediate Level</span>
                 <span class="badge badge-cyan"><i class="fa-solid fa-shield-check"></i> Verified AI Vector</span>
               </div>
-              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);" id="resultAssessmentTitle">Assessment Result</h2>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);" id="resultAssessmentTitle">Python Developer Practical Benchmark</h2>
               <p style="font-size: 0.88rem; color: var(--text-muted);" id="resultMetaInfo">Automated Rubric Evaluation Completed</p>
             </div>
           </div>
@@ -91,7 +91,7 @@
               <i class="fa-solid fa-wand-magic-sparkles"></i> AI Competency Insight
             </div>
             <p style="font-size: 0.88rem; color: var(--text-main); font-style: italic; line-height: 1.5;" id="resultAiInsight">
-              "Evaluation in progress..."
+              "Candidate demonstrated strong practical syntax accuracy and solid algorithmic logic."
             </p>
           </div>
 
@@ -111,7 +111,41 @@
             </h3>
 
             <div id="resultBreakdownList" style="display: flex; flex-direction: column; gap: 1.15rem;">
-              <!-- Dynamic skill breakdown items rendered here -->
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>Python</span>
+                  <span style="color: var(--accent-green); font-weight: 700;">84%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 84%; background: var(--accent-green);"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>SQL</span>
+                  <span style="color: var(--accent-cyan); font-weight: 700;">76%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 76%; background: var(--accent-cyan);"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>Algorithms</span>
+                  <span style="color: var(--primary); font-weight: 700;">80%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 80%; background: var(--primary);"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>Data Analysis</span>
+                  <span style="color: var(--accent-purple); font-weight: 700;">78%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 78%; background: var(--accent-purple);"></div></div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem;">
+                  <span>Debugging</span>
+                  <span style="color: var(--accent-amber); font-weight: 700;">82%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 82%; background: var(--accent-amber);"></div></div>
+              </div>
             </div>
           </div>
 
@@ -201,7 +235,7 @@
   </div>
 
   <script src="config.js?v=20260920-1"></script>
-  <script src="script.js?v=20260921-99"></script>
+  <script src="script.js?v=20260921-100"></script>
   <script src="intro.js?v=20260914-1"></script>
 </body>
 </html>

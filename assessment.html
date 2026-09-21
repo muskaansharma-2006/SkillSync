@@ -80,20 +80,20 @@
             <span id="mcqDifficultyBadge" class="badge badge-cyan"><i class="fa-solid fa-bolt"></i> Practical Concept</span>
           </div>
           <span id="mcqQuestionNumber" style="font-size: 0.88rem; color: var(--text-dim); font-weight: 600;">Question 1 of 5</span>
-        </div>
-
-        <!-- Question Title -->
+        </div>        <!-- Question Title -->
         <h2 id="mcqQuestionTitle" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem; line-height: 1.4;">
-          Loading Question...
+          1. Dynamic Variable Binding & Types
         </h2>
 
         <!-- Question Scenario Description -->
         <p id="mcqQuestionDescription" style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.25rem;">
-          Loading scenario details...
+          In Python, what happens when you execute `x = 10` followed immediately by `x = 'Hello'`?
         </p>
 
         <!-- Optional Code Snippet Block -->
-        <div id="mcqCodeSnippet" style="display: none; background: #050811; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.1rem; font-family: var(--font-code); font-size: 0.88rem; color: #e2e8f0; margin-bottom: 1.5rem; white-space: pre-wrap; overflow-x: auto; line-height: 1.5;"></div>
+        <div id="mcqCodeSnippet" style="background: #050811; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.1rem; font-family: var(--font-code); font-size: 0.88rem; color: #e2e8f0; margin-bottom: 1.5rem; white-space: pre-wrap; overflow-x: auto; line-height: 1.5;">x = 10
+x = 'Hello'
+print(type(x))</div>
 
         <!-- Choices Options Container -->
         <div style="margin-top: 1.5rem;">
@@ -101,7 +101,22 @@
             Select the Correct Answer:
           </h4>
           <div id="mcqOptionsContainer" style="display: flex; flex-direction: column; gap: 0.85rem;">
-            <!-- Options populated dynamically -->
+            <label class="mcq-option-label" style="display: flex; align-items: flex-start; gap: 0.85rem; padding: 1rem 1.15rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s ease;">
+              <input type="radio" name="mcqOption" value="0" style="margin-top: 0.2rem;">
+              <span style="font-size: 0.92rem; color: var(--text-main); line-height: 1.5;">Raises a TypeError because x was declared as an integer.</span>
+            </label>
+            <label class="mcq-option-label" style="display: flex; align-items: flex-start; gap: 0.85rem; padding: 1rem 1.15rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s ease;">
+              <input type="radio" name="mcqOption" value="1" style="margin-top: 0.2rem;">
+              <span style="font-size: 0.92rem; color: var(--text-main); line-height: 1.5;">Python dynamically rebinds x to the string object 'Hello', so type(x) returns &lt;class 'str'&gt;.</span>
+            </label>
+            <label class="mcq-option-label" style="display: flex; align-items: flex-start; gap: 0.85rem; padding: 1rem 1.15rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s ease;">
+              <input type="radio" name="mcqOption" value="2" style="margin-top: 0.2rem;">
+              <span style="font-size: 0.92rem; color: var(--text-main); line-height: 1.5;">x becomes a tuple containing (10, 'Hello').</span>
+            </label>
+            <label class="mcq-option-label" style="display: flex; align-items: flex-start; gap: 0.85rem; padding: 1rem 1.15rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s ease;">
+              <input type="radio" name="mcqOption" value="3" style="margin-top: 0.2rem;">
+              <span style="font-size: 0.92rem; color: var(--text-main); line-height: 1.5;">Compilation fails due to missing static type annotations.</span>
+            </label>
           </div>
         </div>
 
@@ -113,7 +128,11 @@
 
           <!-- Question Pills Nav -->
           <div id="questionNavPills" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-            <!-- Dynamic Pills 1, 2, 3, 4, 5 -->
+            <button class="badge badge-primary" style="padding: 0.4rem 0.75rem;">1</button>
+            <button class="badge badge-secondary" style="padding: 0.4rem 0.75rem;">2</button>
+            <button class="badge badge-secondary" style="padding: 0.4rem 0.75rem;">3</button>
+            <button class="badge badge-secondary" style="padding: 0.4rem 0.75rem;">4</button>
+            <button class="badge badge-secondary" style="padding: 0.4rem 0.75rem;">5</button>
           </div>
 
           <button id="nextQuestionBtn" class="btn btn-cyan">
@@ -124,7 +143,6 @@
       </div>
 
     </main>
-
   </div>
 
   <!-- AI Evaluation Loading Modal Overlay -->
@@ -140,8 +158,13 @@
     </div>
   </div>
 
-  <script src="config.js?v=20260921-999"></script>
-  <script src="script.js?v=20260921-999"></script>
+  <script src="config.js?v=20260921-9999"></script>
+  <script src="script.js?v=20260921-9999"></script>
   <script src="intro.js?v=20260914-1"></script>
+  <script>
+    if (typeof initPracticalAssessmentSimulation === 'function') {
+      initPracticalAssessmentSimulation();
+    }
+  </script>
 </body>
 </html>

@@ -1,11 +1,17 @@
 // config.js - Centralized API Configuration for SkillSync
-const API_BASE_URL = (
-  (typeof window !== 'undefined' && window.ENV_API_BASE_URL) ||
-  (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://127.0.0.1:3000'
-    : 'https://skillsync-web.onrender.com')
-).replace(/\/$/, '');
+function getApiBaseUrl() {
+  if (typeof window !== 'undefined') {
+    if (window.ENV_API_BASE_URL) return window.ENV_API_BASE_URL.replace(/\/$/, '');
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return `${window.location.protocol}//${window.location.hostname}:${window.location.port || 3000}`;
+    }
+    return window.location.origin.replace(/\/$/, '');
+  }
+  return '';
+}
 
+const API_BASE_URL = getApiBaseUrl();
 if (typeof window !== 'undefined') {
   window.API_BASE_URL = API_BASE_URL;
+  window.getApiBaseUrl = getApiBaseUrl;
 }

@@ -660,7 +660,21 @@ async function initAssessmentsPage() {
     }
 
     container.innerHTML = filtered.map(item => {
-      const difficultyBadge = item.difficulty === "Advanced" ? "badge-purple" : "badge-primary";
+      const difficultyBadge = item.difficulty === "Advanced" ? "badge-purple" : (item.difficulty === "Beginner" ? "badge-cyan" : "badge-primary");
+      
+      let skillParam = item.skill_param;
+      if (!skillParam) {
+        const titleLower = (item.title || "").toLowerCase();
+        if (titleLower.includes("level 1") || titleLower.includes("beginner")) skillParam = "python_level1";
+        else if (titleLower.includes("level 3") || titleLower.includes("advanced")) skillParam = "python_level3";
+        else if (titleLower.includes("level 2") || titleLower.includes("intermediate") || titleLower.includes("python")) skillParam = "python_level2";
+        else if (titleLower.includes("sql") || titleLower.includes("data")) skillParam = "sql";
+        else if (titleLower.includes("frontend") || titleLower.includes("ui")) skillParam = "frontend";
+        else if (titleLower.includes("backend") || titleLower.includes("api")) skillParam = "backend";
+        else if (titleLower.includes("core") || titleLower.includes("logic")) skillParam = "core_cs";
+        else skillParam = "python_level1";
+      }
+
       return `
         <div class="card card-hover-glow assessment-card-item" data-title="${item.title}" data-category="${item.category}">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
@@ -675,7 +689,7 @@ async function initAssessmentsPage() {
 
           <div style="display: flex; gap: 1rem; margin: 1.25rem 0; font-size: 0.8rem; color: var(--text-muted);">
             <span><i class="fa-regular fa-clock" style="color: var(--accent-cyan);"></i> ${item.duration_minutes} minutes</span>
-            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> ${item.challenge_count} Challenges</span>
+            <span><i class="fa-solid fa-list-check" style="color: var(--accent-purple);"></i> ${item.challenge_count} Questions</span>
           </div>
 
           <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
@@ -683,8 +697,8 @@ async function initAssessmentsPage() {
             <span class="badge badge-cyan">${item.difficulty}</span>
           </div>
 
-          <a href="assessment-details.html?id=${item.id}" class="btn btn-primary" style="width: 100%;">
-            <i class="fa-solid fa-play"></i> Start Practical Simulation
+          <a href="assessment.html?skill=${skillParam}" class="btn btn-primary" style="width: 100%;">
+            <i class="fa-solid fa-play"></i> Start Assessment
           </a>
         </div>
       `;

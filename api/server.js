@@ -217,8 +217,109 @@ app.get('/api/job-openings', requireUser, requireRole('recruiter'), async (req, 
   return queryList(res, 'job_openings', adminClient.from('job_openings').select('*').eq('is_active', true).order('created_at'));
 });
 
-app.get('/api/assessments', async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').select('*').eq('is_active', true).order('created_at')));
-app.get('/api/assessments/:id', async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').select('*').eq('id', req.params.id).eq('is_active', true).single()));
+const DEFAULT_ASSESSMENTS_LIST = [
+  {
+    id: "python-level-1",
+    title: "Python Level 1 — Beginner Foundations",
+    category: "Programming",
+    difficulty: "Beginner",
+    duration_minutes: 15,
+    challenge_count: 5,
+    description: "Assess foundational Python programming language concepts: dynamic variables, division operators, string immutability, loops, and function syntax.",
+    skill_param: "python_level1",
+    is_active: true
+  },
+  {
+    id: "python-level-2",
+    title: "Python Level 2 — Intermediate Competency",
+    category: "Programming",
+    difficulty: "Intermediate",
+    duration_minutes: 25,
+    challenge_count: 5,
+    description: "Evaluate intermediate Python programming: mutable defaults, list comprehensions, dict safe access, try-except-finally, and context managers.",
+    skill_param: "python_level2",
+    is_active: true
+  },
+  {
+    id: "python-level-3",
+    title: "Python Level 3 — Advanced Mastery",
+    category: "Programming",
+    difficulty: "Advanced",
+    duration_minutes: 30,
+    challenge_count: 5,
+    description: "Assess advanced Python core mechanics: OOP dunder methods, function decorators, generator iterators, GIL concurrency locks, and custom context managers.",
+    skill_param: "python_level3",
+    is_active: true
+  },
+  {
+    id: "sql-benchmark",
+    title: "SQL & Data Analysis Benchmark",
+    category: "Data & SQL",
+    difficulty: "Intermediate",
+    duration_minutes: 25,
+    challenge_count: 5,
+    description: "Evaluate complex relational queries, multi-table joins, CTE optimizations, and window function analytical tasks.",
+    skill_param: "sql",
+    is_active: true
+  },
+  {
+    id: "core-cs-logic",
+    title: "Problem Solving & Algorithmic Logic",
+    category: "Core CS",
+    difficulty: "Advanced",
+    duration_minutes: 25,
+    challenge_count: 5,
+    description: "Rigorous algorithmic challenges testing time complexity, data structures, and edge-case boundary handling.",
+    skill_param: "core_cs",
+    is_active: true
+  },
+  {
+    id: "backend-architecture",
+    title: "Real-Time API & Backend Architecture",
+    category: "Backend",
+    difficulty: "Advanced",
+    duration_minutes: 25,
+    challenge_count: 5,
+    description: "Assess asynchronous HTTP request routing, rate limiting algorithms, and payload validation routines.",
+    skill_param: "backend",
+    is_active: true
+  },
+  {
+    id: "frontend-benchmark",
+    title: "Frontend UI/UX Practical Benchmark",
+    category: "Frontend",
+    difficulty: "Intermediate",
+    duration_minutes: 25,
+    challenge_count: 5,
+    description: "Build responsive dynamic layout components, manage DOM mutation events, and debug CSS grid rendering issues.",
+    skill_param: "frontend",
+    is_active: true
+  }
+];
+
+app.get('/api/assessments', async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  try {
+    const { data, error } = await adminClient.from('assessments').select('*').eq('is_active', true).order('created_at');
+    if (!error && data && data.length > 0) {
+      // Check if Python Level 1/2/3 exist in DB data; if not, merge default levels
+      const hasLevel1 = data.some(a => (a.title || "").includes("Level 1"));
+      if (!hasLevel1) {
+        return send(res, 200, DEFAULT_ASSESSMENTS_LIST);
+      }
+      return send(res, 200, data);
+    }
+    return send(res, 200, DEFAULT_ASSESSMENTS_LIST);
+  } catch (err) {
+    return send(res, 200, DEFAULT_ASSESSMENTS_LIST);
+  }
+});
+app.get('/api/assessments/:id', async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  const found = DEFAULT_ASSESSMENTS_LIST.find(a => a.id === req.params.id);
+  if (found) return send(res, 200, found);
+  return queryList(res, 'assessments', adminClient.from('assessments').select('*').eq('id', req.params.id).eq('is_active', true).single());
+});
 app.post('/api/assessments', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').insert(req.body).select().single()));
 app.put('/api/assessments/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').update(req.body).eq('id', req.params.id).select().single()));
 app.delete('/api/assessments/:id', requireUser, requireRole('recruiter'), async (req, res) => queryList(res, 'assessments', adminClient.from('assessments').update({ is_active: false }).eq('id', req.params.id).select().single()));

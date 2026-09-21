@@ -1615,15 +1615,22 @@ function renderMcqQuestion() {
       `;
     }).join('');
 
-    // Attach click listeners to options
-    const optionCards = container.querySelectorAll(".mcq-option-card");
-    optionCards.forEach(card => {
-      card.addEventListener("click", () => {
-        const choiceIdx = parseInt(card.getAttribute("data-index"), 10);
-        mcqUserAnswers[currentQuestionIndex] = choiceIdx;
-        renderMcqQuestion();
-      });
-    });
+    // Container-level event delegation for instant, robust click selection
+    container.onclick = (e) => {
+      const card = e.target.closest(".mcq-option-card, .mcq-option-label, label, [data-index]");
+      if (card) {
+        let choiceIdx = card.getAttribute("data-index");
+        if (choiceIdx === null || choiceIdx === undefined) {
+          const radioInput = card.querySelector("input[type=radio]");
+          if (radioInput) choiceIdx = radioInput.value;
+        }
+        const parsed = parseInt(choiceIdx, 10);
+        if (!isNaN(parsed)) {
+          mcqUserAnswers[currentQuestionIndex] = parsed;
+          renderMcqQuestion();
+        }
+      }
+    };
   }
 
   // Update Footer Navigation Controls

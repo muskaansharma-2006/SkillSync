@@ -40,7 +40,9 @@ function saveSession(data) {
 }
 
 async function sendAuth(path, payload) {
-  const response = await fetch(`${AUTH_API}/${path}`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  const baseUrl = typeof getApiBaseUrl === 'function' ? getApiBaseUrl() : (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : (window.API_BASE_URL || ''));
+  const url = `${baseUrl.replace(/\/$/, '')}/api/auth/${path}`;
+  const response = await fetch(url, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.message || "We could not complete that request.");
   return data.data;
@@ -125,11 +127,20 @@ document.getElementById("loginForm").addEventListener("submit", async event => {
   event.preventDefault();
   const form = event.currentTarget;
   clearErrors(form);
-  const rawEmail = document.getElementById("loginEmail").value;
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const rawEmail = emailInput ? emailInput.value : "";
   const email = sanitizeEmail(rawEmail);
-  const password = document.getElementById("loginPassword").value;
-  if (!email) document.getElementById("loginEmailError").textContent = "Enter your email.";
-  if (!password) document.getElementById("loginPasswordError").textContent = "Enter your password.";
+  const password = passwordInput ? passwordInput.value : "";
+  
+  if (!email) {
+    const err = document.getElementById("loginEmailError");
+    if (err) err.textContent = "Enter your email.";
+  }
+  if (!password) {
+    const err = document.getElementById("loginPasswordError");
+    if (err) err.textContent = "Enter your password.";
+  }
   if (!email || !password) return;
   setLoading(form, true);
   try { saveSession(await sendAuth("login", { email, password })); }

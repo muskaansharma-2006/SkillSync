@@ -122,11 +122,12 @@ app.post('/api/auth/signup', async (req, res) => {
 });
 
 app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body || {};
-  if (!email || !password) return fail(res, 400, 'Email and password are required.');
+  const rawEmail = (req.body?.email || req.body?.loginEmail || req.body?.username || '').replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim();
+  const password = req.body?.password || req.body?.loginPassword || '';
+  if (!rawEmail || !password) return fail(res, 400, 'Email and password are required.');
   try {
-    const { data, error } = await authClient.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
-    if (error || !data.session) return fail(res, 401, 'Email or password is incorrect.');
+    const { data, error } = await authClient.auth.signInWithPassword({ email: rawEmail.toLowerCase(), password });
+    if (error || !data.session) return fail(res, 401, 'Email or password is incorrect. If you have not created an account yet, click "Create account".');
     const profile = await adminClient.from('candidates').select('id,name,email,role').eq('id', data.user.id).single();
     if (profile.error) return safeError(res, profile.error, 'Your account profile is unavailable.');
     res.cookie('skillsync_access_token', data.session.access_token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: data.session.expires_in * 1000 });

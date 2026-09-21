@@ -16,6 +16,9 @@ window.BYOKManager = (function () {
   let pendingRetryResolver = null;
 
   const getApiUrl = (endpoint) => {
+    if (typeof window !== 'undefined' && (!window.API_BASE_URL || window.location.origin === (window.API_BASE_URL || '').replace(/\/$/, ''))) {
+      return endpoint;
+    }
     const base = typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : (window.API_BASE_URL || '');
     return `${base.replace(/\/$/, '')}${endpoint}`;
   };
@@ -104,7 +107,7 @@ window.BYOKManager = (function () {
           pendingRetryResolver = null;
         }
       } else {
-        const errMsg = json.message || 'Failed to validate or save API key.';
+        const errMsg = json.message || (res.status === 401 ? 'Authentication required. Please sign in to connect your API key.' : 'Failed to validate or save API key.');
         targetStatus = (res.status === 429 || errMsg.toLowerCase().includes('quota') || errMsg.toLowerCase().includes('rate'))
           ? 'rate_limited'
           : 'invalid';
@@ -113,12 +116,14 @@ window.BYOKManager = (function () {
     } catch (err) {
       console.error('BYOK Connect error:', err);
       targetStatus = 'invalid';
-      showFeedback('Network error while connecting API key. Please try again.', 'error');
+      const errMsg = err.message ? `Connection error: ${err.message}` : 'Network error reaching backend server. Please try again.';
+      showFeedback(errMsg, 'error');
     } finally {
       setStatus({ status: targetStatus, hasKey: targetHasKey, provider: selectedProvider, maskedKey: targetMasked, updatedAt: targetUpdatedAt });
     }
     return success;
   }
+
 
   async function removeKey() {
     if (!confirm('Are you sure you want to remove your stored API key?')) {

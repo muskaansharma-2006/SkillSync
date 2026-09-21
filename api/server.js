@@ -290,7 +290,7 @@ app.post('/api/assessment-attempts', requireUser, async (req, res) => {
 
 app.post('/api/assessment-attempts/:attemptId/submit', requireUser, async (req, res) => {
   const { attemptId } = req.params;
-  const { answers = {}, assessment_id } = req.body || {};
+  const { answers = {}, assessment_id, overallScore: clientScore, breakdown: clientBreakdown } = req.body || {};
   try {
     let attempt = null;
     if (attemptId && attemptId !== 'current') {
@@ -311,7 +311,15 @@ app.post('/api/assessment-attempts/:attemptId/submit', requireUser, async (req, 
     const fetchAssessment = await adminClient.from('assessments').select('*').eq('id', attempt.assessment_id).single();
     const assessment = fetchAssessment.data || { title: 'Practical Competency Assessment' };
 
-    const { overallScore, breakdown } = evaluateRubricScores(assessment.title, answers);
+    let overallScore, breakdown;
+    if (typeof clientScore === 'number' && clientBreakdown && typeof clientBreakdown === 'object') {
+      overallScore = clientScore;
+      breakdown = clientBreakdown;
+    } else {
+      const evalRes = evaluateRubricScores(assessment.title, answers);
+      overallScore = evalRes.overallScore;
+      breakdown = evalRes.breakdown;
+    }
 
     await adminClient.from('assessment_attempts').update({ status: 'completed', completed_at: new Date().toISOString(), progress_percent: 100 }).eq('id', attempt.id);
 

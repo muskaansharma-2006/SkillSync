@@ -3,30 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Practical Simulation — SkillSync</title>
+  <title>Skill Assessment — SkillSync</title>
   <!-- Google Fonts & Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
-<body style="background: #070a12;">
-  <div class="app-container">
+<body style="background: #070a12; min-height: 100vh; display: flex; flex-direction: column;">
+  <div class="app-container" style="flex: 1; display: flex; flex-direction: column;">
     
     <!-- Assessment Specific Top Header -->
-    <header class="navbar" style="background: #0b0f19; border-bottom-color: rgba(255,255,255,0.1);">
+    <header class="navbar" style="background: #0b0f19; border-bottom-color: rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100;">
       <div class="nav-container" style="max-width: 100%;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
           <a href="assessments.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-xmark"></i> Exit</a>
-          <div style="font-weight: 700; font-size: 1rem; color: var(--text-main);">
+          <div id="mcqSkillTitle" style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">
             Python Practical Competency
           </div>
-          <span class="badge badge-amber"><i class="fa-solid fa-list-check"></i> Challenge 3 of 8</span>
+          <span id="mcqQuestionBadge" class="badge badge-amber"><i class="fa-solid fa-list-check"></i> Question 1 of 5</span>
         </div>
 
-        <!-- Timer Display -->
+        <!-- Timer Display & Submission -->
         <div style="display: flex; align-items: center; gap: 1rem;">
           <div class="glass-panel" style="padding: 0.4rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-code); font-weight: 700; font-size: 1.1rem; color: var(--accent-cyan);">
             <i class="fa-regular fa-clock" style="color: var(--accent-amber);"></i>
-            <span id="assessmentTimer">18:42</span>
+            <span id="assessmentTimer">25:00</span>
           </div>
 
           <button id="submitAssessmentBtn" class="btn btn-primary">
@@ -36,119 +36,89 @@
       </div>
     </header>
 
-    <!-- IDE Split Screen Layout -->
-    <main style="flex: 1; padding: 1rem 1.5rem; max-width: 1600px; margin: 0 auto; width: 100%;">
+    <!-- Guided MCQ Assessment Layout -->
+    <main style="flex: 1; padding: 1.5rem; max-width: 1100px; margin: 0 auto; width: 100%;">
       
-      <div class="ide-container">
-        
-        <!-- Left Panel: Problem Description & Test Cases -->
-        <div class="ide-panel">
-          <div class="ide-header">
-            <span><i class="fa-solid fa-file-code" style="color: var(--primary);"></i> Problem Statement</span>
-            <span class="badge badge-cyan">Python 3.11</span>
+      <!-- User Guide & Instruction Box -->
+      <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08)); border: 1px solid rgba(99, 102, 241, 0.3); padding: 1.25rem;">
+        <div style="display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: white; font-size: 1.2rem;">
+            <i class="fa-solid fa-graduation-cap"></i>
           </div>
-
-          <div style="padding: 1.25rem; overflow-y: auto; flex: 1;">
-            <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">
-              Fix the Broken Transaction Calculator
-            </h2>
-            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
-              A legacy payment processing script is crashing when handling customer refunds with negative transaction balances and zero-tax currencies.
+          <div style="flex: 1; min-width: 280px;">
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+              Assessment User Guide & Instructions
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.75rem;">
+              This assessment tests your theoretical knowledge and practical engineering decision-making through realistic multiple-choice scenarios.
             </p>
-
-            <div style="margin: 1.25rem 0; padding: 1rem; background: rgba(0, 0, 0, 0.4); border-left: 3px solid var(--primary); border-radius: var(--radius-sm);">
-              <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem;">Task Objectives:</h4>
-              <ol style="font-size: 0.82rem; color: var(--text-muted); padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.35rem;">
-                <li>Fix the `ZeroDivisionError` when tax rate is passed as `0.0`.</li>
-                <li>Ensure negative amount line items are processed as valid refund deductions.</li>
-                <li>Calculate total net balance rounded to 2 decimal places.</li>
-              </ol>
-            </div>
-
-            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">Sample Inputs & Outputs</h4>
-            
-            <div style="font-family: var(--font-code); font-size: 0.8rem; background: #050811; border: 1px solid var(--border-color); padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 1rem;">
-              <span style="color: var(--text-dim);"># Sample Input:</span><br>
-              transactions = [100.0, 250.0, -50.0]<br>
-              tax_rate = 0.15<br><br>
-              <span style="color: var(--text-dim);"># Expected Output:</span><br>
-              {"gross": 300.0, "tax": 45.0, "net": 345.0}
-            </div>
-
-            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">Automated Verification Suite</h4>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem;">
-                <span>Test 1: Standard Calculation</span>
-                <span class="badge badge-green"><i class="fa-solid fa-check"></i> Ready</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; color: var(--text-main); background: rgba(0,0,0,0.25); padding: 0.55rem 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--primary);">
+                <span style="font-weight: 700; color: var(--primary);">Step 1:</span>
+                <span>Read the scenario & code snippet carefully</span>
               </div>
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem;">
-                <span>Test 2: Negative Amounts (Refunds)</span>
-                <span class="badge badge-green"><i class="fa-solid fa-check"></i> Ready</span>
+              <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; color: var(--text-main); background: rgba(0,0,0,0.25); padding: 0.55rem 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-cyan);">
+                <span style="font-weight: 700; color: var(--accent-cyan);">Step 2:</span>
+                <span>Select the single best MCQ option (A, B, C, or D)</span>
               </div>
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem;">
-                <span>Test 3: Zero Tax Rate Edge Case</span>
-                <span class="badge badge-amber"><i class="fa-solid fa-triangle-exclamation"></i> Pending</span>
+              <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; color: var(--text-main); background: rgba(0,0,0,0.25); padding: 0.55rem 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-purple);">
+                <span style="font-weight: 700; color: var(--accent-purple);">Step 3:</span>
+                <span>Navigate or Submit to calculate score</span>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Main Question Container Card -->
+      <div class="card" id="mcqCard" style="padding: 2rem; position: relative;">
+        
+        <!-- Question Metadata Badges -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span id="mcqCategoryBadge" class="badge badge-primary"><i class="fa-solid fa-code"></i> Python Programming</span>
+            <span id="mcqDifficultyBadge" class="badge badge-cyan"><i class="fa-solid fa-bolt"></i> Practical Concept</span>
+          </div>
+          <span id="mcqQuestionNumber" style="font-size: 0.88rem; color: var(--text-dim); font-weight: 600;">Question 1 of 5</span>
+        </div>
+
+        <!-- Question Title -->
+        <h2 id="mcqQuestionTitle" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem; line-height: 1.4;">
+          Loading Question...
+        </h2>
+
+        <!-- Question Scenario Description -->
+        <p id="mcqQuestionDescription" style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.25rem;">
+          Loading scenario details...
+        </p>
+
+        <!-- Optional Code Snippet Block -->
+        <div id="mcqCodeSnippet" style="display: none; background: #050811; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.1rem; font-family: var(--font-code); font-size: 0.88rem; color: #e2e8f0; margin-bottom: 1.5rem; white-space: pre-wrap; overflow-x: auto; line-height: 1.5;"></div>
+
+        <!-- Choices Options Container -->
+        <div style="margin-top: 1.5rem;">
+          <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-dim); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">
+            Select the Correct Answer:
+          </h4>
+          <div id="mcqOptionsContainer" style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <!-- Options populated dynamically -->
           </div>
         </div>
 
-        <!-- Right Panel: Code Editor & Console Output -->
-        <div class="ide-panel">
-          <div class="ide-header">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <i class="fa-solid fa-code" style="color: var(--accent-cyan);"></i>
-              <span>solution.py</span>
-            </div>
+        <!-- Question Footer Navigation -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; gap: 1rem;">
+          <button id="prevQuestionBtn" class="btn btn-secondary" disabled>
+            <i class="fa-solid fa-arrow-left"></i> Previous Question
+          </button>
 
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <span id="testResultsBadge" class="badge badge-amber"><i class="fa-solid fa-circle-dot"></i> Unchecked</span>
-              <button id="runCodeBtn" class="btn btn-cyan btn-sm">
-                <i class="fa-solid fa-play"></i> Run Code
-              </button>
-            </div>
+          <!-- Question Pills Nav -->
+          <div id="questionNavPills" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <!-- Dynamic Pills 1, 2, 3, 4, 5 -->
           </div>
 
-          <!-- Code Editor Textarea -->
-          <textarea class="ide-editor" spellcheck="false"># Challenge 3: Fix the Broken Transaction Calculator
-# BUG ALERT: Legacy code crashes on zero-tax rate (ZeroDivisionError)
-# BUG ALERT: Negative refund amounts (-50.0) are ignored in calculation
-
-def calculate_transaction_summary(transactions, tax_rate=0.15):
-    if not transactions:
-        return {"gross": 0.0, "tax": 0.0, "net": 0.0}
-    
-    # BROKEN LOGIC: Ignores negative amounts (refunds)
-    gross_total = 0.0
-    for amount in transactions:
-        if amount > 0:
-            gross_total += amount
-            
-    # BROKEN LOGIC: Causes ZeroDivisionError when tax_rate is 0.0
-    tax_amount = gross_total / tax_rate 
-    
-    return {
-        "gross": gross_total,
-        "tax": tax_amount,
-        "net": gross_total + tax_amount
-    }
-
-# Candidate Test Invocation
-sample = [100.0, 250.0, -50.0]
-print("Running test...", calculate_transaction_summary(sample, 0.15))
-</textarea>
-
-          <!-- Interactive Console Output -->
-          <div class="ide-console">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; color: var(--text-dim); font-size: 0.75rem;">
-              <span>CONSOLE OUTPUT</span>
-              <span>Python 3.11 Standard Output</span>
-            </div>
-            <div id="consoleOutput">
-              > Click "Run Code" to compile python script and execute unit assertions against sandbox engine.
-            </div>
-          </div>
+          <button id="nextQuestionBtn" class="btn btn-cyan">
+            Next Question <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </div>
 
       </div>
@@ -162,16 +132,16 @@ print("Running test...", calculate_transaction_summary(sample, 0.15))
     <div class="modal-box">
       <div class="loader-spinner"></div>
       <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">
-        Assessment Submitted Successfully
+        Evaluating Assessment...
       </h3>
       <p id="modalStatusMsg" style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
-        AI evaluation is being prepared... Analyzing logic, execution speed, and edge-case handling.
+        Analyzing your conceptual answers and generating verified competency breakdown...
       </p>
     </div>
   </div>
 
   <script src="config.js?v=20260920-1"></script>
-  <script src="script.js?v=20260914-3"></script>
+  <script src="script.js?v=20260921-1"></script>
   <script src="intro.js?v=20260914-1"></script>
 </body>
 </html>

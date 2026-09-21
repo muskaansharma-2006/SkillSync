@@ -26,19 +26,30 @@ export async function saveUserKey(supabaseAdmin, userId, rawKey, providerName = 
   const encryptedKey = encryptApiKey(rawKey.trim());
 
   // 3. Upsert into Supabase user_api_keys
-  const { error } = await supabaseAdmin
+  const payload = {
+    user_id: userId,
+    encrypted_key: encryptedKey,
+    key_status: 'connected',
+    updated_at: new Date().toISOString()
+  };
+
+  let { error } = await supabaseAdmin
     .from('user_api_keys')
-    .upsert({
-      user_id: userId,
-      provider: providerName,
-      encrypted_key: encryptedKey,
-      key_status: 'connected',
-      updated_at: new Date().toISOString()
-    }, { onConflict: 'user_id' });
+    .upsert({ ...payload, provider: providerName }, { onConflict: 'user_id' });
+
+  // If column "provider" does not exist in live Supabase table, retry without provider column
+  if (error && (error.code === 'PGRST204' || error.message?.includes('provider') || error.message?.includes('column'))) {
+    console.warn('[BYOK] Column "provider" missing in user_api_keys table, retrying upsert without provider...');
+    const retry = await supabaseAdmin
+      .from('user_api_keys')
+      .upsert(payload, { onConflict: 'user_id' });
+    error = retry.error;
+  }
 
   if (error) {
     console.error('Database error saving user API key:', error);
-    throw new Error('Failed to save API key to database.');
+    const detailMsg = error.message ? `: ${error.message}` : '';
+    throw new Error(`Failed to save API key to database${detailMsg}.`);
   }
 
   return {
@@ -53,11 +64,21 @@ export async function saveUserKey(supabaseAdmin, userId, rawKey, providerName = 
  * Retrieves non-sensitive key status and masked key display for a user.
  */
 export async function getUserKeyStatus(supabaseAdmin, userId) {
-  const { data, error } = await supabaseAdmin
+  let { data, error } = await supabaseAdmin
     .from('user_api_keys')
     .select('provider, encrypted_key, key_status, updated_at')
     .eq('user_id', userId)
     .maybeSingle();
+
+  if (error && (error.message?.includes('provider') || error.message?.includes('column'))) {
+    const retry = await supabaseAdmin
+      .from('user_api_keys')
+      .select('encrypted_key, key_status, updated_at')
+      .eq('user_id', userId)
+      .maybeSingle();
+    data = retry.data;
+    error = retry.error;
+  }
 
   if (error || !data || !data.encrypted_key) {
     return {
@@ -84,6 +105,7 @@ export async function getUserKeyStatus(supabaseAdmin, userId) {
     updatedAt: data.updated_at
   };
 }
+
 
 /**
  * Deletes user's API key.

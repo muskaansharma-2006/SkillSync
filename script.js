@@ -2700,6 +2700,9 @@ function initAIMentorPage() {
 
     stopMentorVoice();
 
+    // Clear input box immediately upon sending
+    if (input) input.value = "";
+
     // Set UI to loading state
     if (emptyState) emptyState.style.display = "none";
     if (responseBox) responseBox.style.display = "none";
@@ -2782,7 +2785,10 @@ function initAIMentorPage() {
         sendBtn.disabled = false;
         sendBtn.innerHTML = `<span>Send</span> <i class="fa-solid fa-paper-plane"></i>`;
       }
-      if (input) input.disabled = false;
+      if (input) {
+        input.disabled = false;
+        input.value = "";
+      }
     }
   }
 }

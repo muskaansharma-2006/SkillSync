@@ -1434,7 +1434,9 @@ const MCQ_DATABASE = {
   }
 };
 
-let currentMcqCategory = "python";
+MCQ_DATABASE.python = MCQ_DATABASE.python_level1;
+
+let currentMcqCategory = "python_level1";
 let currentQuestionIndex = 0;
 let mcqUserAnswers = {}; // { 0: optionIndex, 1: optionIndex }
 
@@ -1447,7 +1449,7 @@ function initPracticalAssessmentSimulation() {
     currentMcqCategory = "python_level1";
   } else if (rawSkill.includes("level3") || rawSkill.includes("level_3") || rawSkill.includes("advanced") || rawSkill === "python_3") {
     currentMcqCategory = "python_level3";
-  } else if (rawSkill.includes("level2") || rawSkill.includes("level_2") || rawSkill.includes("intermediate") || rawSkill === "python_2" || rawSkill === "python") {
+  } else if (rawSkill.includes("level2") || rawSkill.includes("level_2") || rawSkill.includes("intermediate") || rawSkill === "python_2") {
     currentMcqCategory = "python_level2";
   } else if (rawSkill.includes("sql") || rawSkill.includes("data")) {
     currentMcqCategory = "sql";
@@ -1461,7 +1463,7 @@ function initPracticalAssessmentSimulation() {
     currentMcqCategory = "python_level1";
   }
 
-  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python;
+  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python_level1;
   currentQuestionIndex = 0;
   mcqUserAnswers = {};
 
@@ -1525,7 +1527,7 @@ function initPracticalAssessmentSimulation() {
 }
 
 function renderMcqQuestion() {
-  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python;
+  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python_level1;
   const questions = categoryData.questions;
   const q = questions[currentQuestionIndex];
 
@@ -1675,7 +1677,7 @@ function renderMcqQuestion() {
 }
 
 function jumpToMcqQuestion(index) {
-  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python;
+  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python_level1;
   if (index >= 0 && index < categoryData.questions.length) {
     currentQuestionIndex = index;
     renderMcqQuestion();
@@ -1684,7 +1686,7 @@ function jumpToMcqQuestion(index) {
 
 // Submission Loading Modal & Real API Submission
 async function triggerMcqSubmission() {
-  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python;
+  const categoryData = MCQ_DATABASE[currentMcqCategory] || MCQ_DATABASE.python_level1;
   const questions = categoryData.questions;
 
   // Check how many questions are answered

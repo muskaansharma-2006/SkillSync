@@ -165,7 +165,7 @@ app.post('/api/auth/login', async (req, res) => {
       res.cookie('skillsync_access_token', authSession.access_token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: authSession.expires_in * 1000 });
     }
 
-    return send(res, 200, { user: profile, session: authSession ? { expires_in: authSession.expires_in } : null });
+    return send(res, 200, { user: profile, session: authSession ? { access_token: authSession.access_token, expires_in: authSession.expires_in } : null });
   } catch (error) {
     return safeError(res, error, 'Login could not be completed.');
   }

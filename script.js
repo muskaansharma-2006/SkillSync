@@ -145,11 +145,17 @@ async function enforceAuthentication() {
   const page = getPageName() || "index.html";
   if (!PROTECTED_PAGES.has(page)) return true;
   try {
-    const response = await fetch(`${getApiBaseUrl()}/api/auth/me`, { credentials: "include" });
+    const token = localStorage.getItem("skillsync_token");
+    const headers = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/me`, { credentials: "include", headers });
     const result = await response.json();
     const user = result.data;
     if (!response.ok || !user) throw new Error("Unauthenticated");
     window.SkillSyncAuth = user;
+    localStorage.setItem("skillsync_user", JSON.stringify(user));
+
     if (user.role === "recruiter" && ["index.html", "assessments.html", "assessment-details.html", "assessment.html", "result.html", "skill-gap.html", "practice.html", "passport.html", "history.html", "mentor.html", "career-recommendation.html"].includes(page)) {
       window.location.href = "recruiter.html";
       return false;
@@ -160,6 +166,8 @@ async function enforceAuthentication() {
     }
     return true;
   } catch (error) {
+    localStorage.removeItem("skillsync_token");
+    localStorage.removeItem("skillsync_user");
     window.location.href = "auth.html?returnTo=" + encodeURIComponent(page);
     return false;
   }

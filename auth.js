@@ -34,7 +34,13 @@ function setLoading(form, loading) {
 }
 
 function saveSession(data) {
-  window.SkillSyncAuth = data.user;
+  if (data?.session?.access_token) {
+    localStorage.setItem("skillsync_token", data.session.access_token);
+  }
+  if (data?.user) {
+    window.SkillSyncAuth = data.user;
+    localStorage.setItem("skillsync_user", JSON.stringify(data.user));
+  }
   const destination = data.user?.role === "recruiter" ? "recruiter.html" : "index.html";
   window.location.href = destination;
 }
@@ -42,7 +48,11 @@ function saveSession(data) {
 async function sendAuth(path, payload) {
   const baseUrl = typeof getApiBaseUrl === 'function' ? getApiBaseUrl() : (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : (window.API_BASE_URL || ''));
   const url = `${baseUrl.replace(/\/$/, '')}/api/auth/${path}`;
-  const response = await fetch(url, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  const token = localStorage.getItem("skillsync_token");
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const response = await fetch(url, { method: "POST", credentials: "include", headers, body: JSON.stringify(payload) });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.message || "We could not complete that request.");
   return data.data;

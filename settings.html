@@ -14,13 +14,52 @@
       <div class="page-header"><span class="badge badge-cyan"><i class="fa-solid fa-sliders"></i> Account settings</span><h1 class="page-title">Settings</h1><p class="page-subtitle">Manage your account and optional AI configuration.</p></div>
       <div class="settings-grid">
         <section class="card"><h2>Profile</h2><p class="settings-muted">Your authenticated SkillSync account.</p><div class="settings-profile"><div class="avatar" id="settingsAvatar">SS</div><div><strong id="settingsName">SkillSync user</strong><span id="settingsEmail"></span><span id="settingsRole"></span></div></div></section>
-        <section class="card ai-config-card"><div class="settings-heading"><div><span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Connected</span><h2>SkillSync AI</h2><p class="settings-muted">Powered by Gemini through the SkillSync backend.</p></div><i class="fa-solid fa-wand-magic-sparkles settings-icon"></i></div><div class="settings-divider"></div><h3>Use my own Gemini API key <span class="badge badge-amber">Optional advanced feature</span></h3><p class="settings-muted">Secure user-key storage is not enabled because this prototype has no persistent credential vault yet. Your normal SkillSync AI experience already works through the backend configuration.</p><div class="byok-placeholder"><i class="fa-solid fa-lock"></i><span>BYOK will be enabled after secure database-backed encrypted storage is connected. No key is requested or stored here.</span></div><button class="btn btn-secondary" disabled>Connect / Test Key</button></section>
+        <section class="card ai-config-card" id="byokSettingsCard">
+          <div class="settings-heading">
+            <div>
+              <span id="settingsByokBadge" class="badge badge-secondary"><i class="fa-solid fa-key"></i> Key Required</span>
+              <h2>AI & API Configuration</h2>
+              <p class="settings-muted">Manage your personal AI provider and encrypted API key.</p>
+            </div>
+            <i class="fa-solid fa-wand-magic-sparkles settings-icon"></i>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.86rem; color: var(--text-muted);">Configured AI Provider:</span>
+              <strong style="color: var(--accent-cyan); font-size: 0.9rem;" id="settingsByokProvider">Google Gemini</strong>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.86rem; color: var(--text-muted);">Saved API Key:</span>
+              <code style="background: rgba(0,0,0,0.3); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); color: var(--text-main); font-size: 0.85rem;" id="settingsByokMaskedKey">••••••••••••</code>
+            </div>
+
+            <div class="byok-feedback" hidden></div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
+              <button type="button" id="settingsByokConnectBtn" class="btn btn-primary btn-sm" onclick="window.BYOKManager?.openModal();">
+                <i class="fa-solid fa-plus"></i> Connect API Key
+              </button>
+              <button type="button" id="settingsByokUpdateBtn" class="btn btn-secondary btn-sm" style="display: none;" onclick="window.BYOKManager?.openModal();">
+                <i class="fa-solid fa-pen-to-square"></i> Update API Key
+              </button>
+              <button type="button" id="settingsByokRemoveBtn" class="btn btn-secondary btn-sm" style="display: none; color: #f87171; border-color: rgba(248,113,113,0.3);" onclick="window.BYOKManager?.removeKey();">
+                <i class="fa-solid fa-trash"></i> Remove Key
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
     <footer class="footer">SkillSync — Don't prove what you learned. Demonstrate what you can do.</footer>
   </div>
   <script src="config.js?v=20260920-1"></script>
+  <script src="byok.js?v=20260921-1"></script>
   <script src="script.js?v=20260914-3"></script>
   <script src="settings.js?v=20260914-1"></script>
 </body>
 </html>
+

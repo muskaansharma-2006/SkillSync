@@ -25,3 +25,8 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 });
 
 loadSettings();
+
+if (typeof window.BYOKManager !== 'undefined') {
+  window.BYOKManager.init({ containerId: 'byokSettingsCard' });
+}
+

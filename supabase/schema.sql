@@ -150,6 +150,7 @@ create policy feedback_own_insert on public.feedback for insert with check (cand
 
 create table if not exists public.user_api_keys (
   user_id uuid primary key references auth.users(id) on delete cascade,
+  provider text not null default 'gemini',
   encrypted_key text not null,
   key_status text not null default 'connected',
   updated_at timestamptz not null default now()

@@ -551,12 +551,12 @@ app.get('/api/user/key-status', requireUser, async (req, res) => {
 });
 
 app.post('/api/user/api-key', requireUser, async (req, res) => {
-  const { apiKey } = req.body || {};
+  const { apiKey, provider = 'gemini' } = req.body || {};
   if (!apiKey || typeof apiKey !== 'string' || !apiKey.trim()) {
     return fail(res, 400, 'API key is required.');
   }
   try {
-    const result = await saveUserKey(adminClient, req.user.id, apiKey.trim());
+    const result = await saveUserKey(adminClient, req.user.id, apiKey.trim(), provider);
     return send(res, 200, result);
   } catch (err) {
     if (err.code === 'INVALID_KEY') {
@@ -571,6 +571,7 @@ app.post('/api/user/api-key', requireUser, async (req, res) => {
     return fail(res, 400, err.message || 'Failed to save API key.');
   }
 });
+
 
 app.delete('/api/user/api-key', requireUser, async (req, res) => {
   try {
@@ -595,8 +596,12 @@ app.post('/api/ai/mentor', requireUser, async (req, res) => {
     });
     return send(res, 200, { response: responseText });
   } catch (err) {
-    if (err.code === 'NO_KEY_CONNECTED' || err.code === 'DECRYPTION_FAILED') {
-      return fail(res, 403, err.message);
+    if (err.code === 'BYOK_REQUIRED' || err.code === 'NO_KEY_CONNECTED' || err.code === 'DECRYPTION_FAILED') {
+      return res.status(403).json({
+        success: false,
+        code: 'BYOK_REQUIRED',
+        message: 'To use SkillSync\'s AI-powered features, please connect your own API key.'
+      });
     }
     if (err.code === 'INVALID_KEY') {
       return fail(res, 400, 'Your connected API key is invalid. Please update your key.');
@@ -604,6 +609,7 @@ app.post('/api/ai/mentor', requireUser, async (req, res) => {
     if (err.code === 'RATE_LIMITED') {
       return fail(res, 429, 'Your API key rate limit was exceeded. Please try again later.');
     }
+
     return safeError(res, err, err.message || 'AI Mentor service is temporarily unavailable.');
   }
 });

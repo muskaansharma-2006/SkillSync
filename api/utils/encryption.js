@@ -48,3 +48,17 @@ export function decryptApiKey(encryptedData) {
 
   return decrypted;
 }
+
+/**
+ * Returns a masked representation of an API key for safe UI display (e.g. ••••••••••••1234).
+ * @param {string} rawKey 
+ * @returns {string}
+ */
+export function maskApiKey(rawKey) {
+  if (!rawKey || typeof rawKey !== 'string') return '';
+  const clean = rawKey.trim();
+  if (clean.length <= 4) return '••••' + clean;
+  const last4 = clean.slice(-4);
+  return '••••••••••••' + last4;
+}
+

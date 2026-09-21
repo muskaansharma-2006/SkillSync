@@ -122,17 +122,53 @@ app.post('/api/auth/signup', async (req, res) => {
 });
 
 app.post('/api/auth/login', async (req, res) => {
-  const rawEmail = (req.body?.email || req.body?.loginEmail || req.body?.username || '').replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim();
+  const rawEmail = (req.body?.email || req.body?.loginEmail || req.body?.username || '').replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim().toLowerCase();
   const password = req.body?.password || req.body?.loginPassword || '';
   if (!rawEmail || !password) return fail(res, 400, 'Email and password are required.');
+  
   try {
-    const { data, error } = await authClient.auth.signInWithPassword({ email: rawEmail.toLowerCase(), password });
-    if (error || !data.session) return fail(res, 401, 'Email or password is incorrect. If you have not created an account yet, click "Create account".');
-    const profile = await adminClient.from('candidates').select('id,name,email,role').eq('id', data.user.id).single();
-    if (profile.error) return safeError(res, profile.error, 'Your account profile is unavailable.');
-    res.cookie('skillsync_access_token', data.session.access_token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: data.session.expires_in * 1000 });
-    return send(res, 200, { user: profile.data, session: { expires_in: data.session.expires_in } });
-  } catch (error) { return safeError(res, error, 'Login could not be completed.'); }
+    let authUser = null;
+    let authSession = null;
+
+    const loginRes = await authClient.auth.signInWithPassword({ email: rawEmail, password });
+    if (loginRes.data?.user) {
+      authUser = loginRes.data.user;
+      authSession = loginRes.data.session;
+    } else {
+      // First-time seamless account provisioning
+      const signupRes = await authClient.auth.signUp({
+        email: rawEmail,
+        password: password,
+        options: { data: { name: rawEmail.split('@')[0], role: 'candidate' } }
+      });
+      if (signupRes.data?.user) {
+        authUser = signupRes.data.user;
+        authSession = signupRes.data.session;
+      }
+    }
+
+    if (!authUser) {
+      return fail(res, 401, 'Email or password is incorrect.');
+    }
+
+    let profileRes = await adminClient.from('candidates').select('id,name,email,role').eq('id', authUser.id).maybeSingle();
+    let profile = profileRes.data;
+
+    if (!profile) {
+      const name = authUser.user_metadata?.name || rawEmail.split('@')[0] || 'Candidate';
+      const role = authUser.user_metadata?.role || 'candidate';
+      const upsertRes = await adminClient.from('candidates').upsert({ id: authUser.id, name, email: rawEmail, role }, { onConflict: 'id' }).select('id,name,email,role').single();
+      profile = upsertRes.data || { id: authUser.id, name, email: rawEmail, role };
+    }
+
+    if (authSession) {
+      res.cookie('skillsync_access_token', authSession.access_token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: authSession.expires_in * 1000 });
+    }
+
+    return send(res, 200, { user: profile, session: authSession ? { expires_in: authSession.expires_in } : null });
+  } catch (error) {
+    return safeError(res, error, 'Login could not be completed.');
+  }
 });
 
 app.post('/api/auth/logout', async (req, res) => {

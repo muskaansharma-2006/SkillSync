@@ -1586,7 +1586,6 @@ function initAIMentorPage() {
   const input = document.getElementById("mentorQuestionInput");
   const sendBtn = document.getElementById("sendMentorBtn");
   const clearBtn = document.getElementById("clearChatBtn");
-  const lockOverlay = document.getElementById("byokLockOverlay");
   
   const emptyState = document.getElementById("mentorEmptyState");
   const loadingState = document.getElementById("mentorLoadingState");
@@ -1597,16 +1596,10 @@ function initAIMentorPage() {
   const answerContent = document.getElementById("aiAnswerContent");
   const errorText = document.getElementById("errorMessageText");
 
-  // Initialize BYOK manager component
+  // Initialize BYOK manager component (optional custom key)
   if (typeof window.BYOKManager !== 'undefined') {
     window.BYOKManager.init({
-      containerId: 'byokCard',
-      onStatusChange: (statusState) => {
-        const isUnlocked = statusState.hasKey && statusState.status === 'connected';
-        if (lockOverlay) {
-          lockOverlay.style.display = isUnlocked ? 'none' : 'flex';
-        }
-      }
+      containerId: 'byokCard'
     });
   }
 

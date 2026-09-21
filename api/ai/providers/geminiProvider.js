@@ -7,14 +7,16 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
  * @returns {Promise<{ success: boolean }>}
  */
 export async function testKey(apiKey) {
-  if (!apiKey || typeof apiKey !== 'string' || !apiKey.trim()) {
+  const keyToUse = (apiKey && typeof apiKey === 'string' && apiKey.trim()) ? apiKey.trim() : process.env.GEMINI_API_KEY;
+
+  if (!keyToUse) {
+    console.warn('[GeminiProvider] WARNING: No API key provided for testKey and process.env.GEMINI_API_KEY is missing!');
     const err = new Error('API key is required.');
     err.code = 'INVALID_KEY';
     throw err;
   }
 
-  const cleanKey = apiKey.trim();
-  const url = `${GEMINI_API_URL}?key=${cleanKey}`;
+  const url = `${GEMINI_API_URL}?key=${keyToUse}`;
 
   let response;
   try {
@@ -65,19 +67,22 @@ export async function testKey(apiKey) {
 /**
  * Generates text response using Gemini API.
  * @param {Object} options
- * @param {string} options.apiKey
+ * @param {string} [options.apiKey]
  * @param {string} options.prompt
  * @param {string} [options.systemInstruction]
  * @returns {Promise<string>}
  */
 export async function generateResponse({ apiKey, prompt, systemInstruction }) {
-  if (!apiKey) {
-    const err = new Error('No API key provided.');
+  const keyToUse = (apiKey && typeof apiKey === 'string' && apiKey.trim()) ? apiKey.trim() : process.env.GEMINI_API_KEY;
+
+  if (!keyToUse) {
+    console.warn('[GeminiProvider] WARNING: No API key provided and process.env.GEMINI_API_KEY is not set on the server!');
+    const err = new Error('No Gemini API key is configured. Please set GEMINI_API_KEY on the server or provide a custom key.');
     err.code = 'MISSING_KEY';
     throw err;
   }
 
-  const url = `${GEMINI_API_URL}?key=${apiKey.trim()}`;
+  const url = `${GEMINI_API_URL}?key=${keyToUse}`;
   const requestBody = {
     contents: [{ parts: [{ text: prompt }] }]
   };

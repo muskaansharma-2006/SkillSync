@@ -9,6 +9,12 @@ import { saveUserKey, getUserKeyStatus, deleteUserKey, generateAIMentorResponse 
 
 dotenv.config({ path: new URL('../backend/.env', import.meta.url) });
 
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('[SkillSync API] WARNING: GEMINI_API_KEY is not defined in process.env! Default AI features will rely on BYOK keys.');
+} else {
+  console.log('[SkillSync API] Shared GEMINI_API_KEY loaded successfully.');
+}
+
 const app = express();
 app.set('etag', false);
 const port = Number(process.env.PORT || 3000);

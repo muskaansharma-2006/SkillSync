@@ -82,29 +82,38 @@ export async function deleteUserKey(supabaseAdmin, userId) {
 }
 
 /**
- * Internal helper to retrieve & decrypt user's API key.
+/**
+ * Internal helper to retrieve & decrypt user's API key, falling back to process.env.GEMINI_API_KEY.
  */
 export async function getUserDecryptedKey(supabaseAdmin, userId) {
-  const { data, error } = await supabaseAdmin
-    .from('user_api_keys')
-    .select('encrypted_key, key_status')
-    .eq('user_id', userId)
-    .maybeSingle();
+  let userKey = null;
 
-  if (error || !data || !data.encrypted_key) {
-    const err = new Error('No API key connected. Please connect your Gemini API key to use AI Mentor.');
+  if (supabaseAdmin && userId) {
+    const { data } = await supabaseAdmin
+      .from('user_api_keys')
+      .select('encrypted_key, key_status')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (data && data.encrypted_key) {
+      try {
+        userKey = decryptApiKey(data.encrypted_key);
+      } catch (decErr) {
+        console.error('User key decryption error, falling back to shared key:', decErr);
+      }
+    }
+  }
+
+  const fallbackKey = process.env.GEMINI_API_KEY;
+  const apiKey = userKey || fallbackKey;
+
+  if (!apiKey) {
+    const err = new Error('No Gemini API key is configured on the backend.');
     err.code = 'NO_KEY_CONNECTED';
     throw err;
   }
 
-  try {
-    return decryptApiKey(data.encrypted_key);
-  } catch (decErr) {
-    console.error('Key decryption error:', decErr);
-    const err = new Error('Failed to decrypt saved API key. Please reconnect your key.');
-    err.code = 'DECRYPTION_FAILED';
-    throw err;
-  }
+  return apiKey;
 }
 
 /**
@@ -122,10 +131,10 @@ export async function updateUserKeyStatus(supabaseAdmin, userId, status) {
 }
 
 /**
- * Generates AI Mentor advice/responses using the user's stored API key.
+ * Generates AI Mentor advice/responses using the user's stored API key or shared default key.
  */
 export async function generateAIMentorResponse({ supabaseAdmin, userId, prompt, context, providerName = 'gemini' }) {
-  const apiKey = await getUserDecryptedKey(supabaseAdmin, userId);
+  let apiKey = await getUserDecryptedKey(supabaseAdmin, userId);
   const provider = getProvider(providerName);
 
   const systemInstruction = `You are SkillSync AI Mentor, an expert tech career and skill development coach. 
@@ -140,6 +149,24 @@ User Context: ${context ? JSON.stringify(context) : 'General candidate'}`;
     });
     return reply;
   } catch (err) {
+    // If user's custom key failed, attempt automatic fallback to process.env.GEMINI_API_KEY
+    if (process.env.GEMINI_API_KEY && apiKey !== process.env.GEMINI_API_KEY) {
+      console.warn('Personal key failed, retrying with shared backend GEMINI_API_KEY');
+      if (err.code === 'INVALID_KEY') {
+        await updateUserKeyStatus(supabaseAdmin, userId, 'invalid');
+      }
+      try {
+        const reply = await provider.generateResponse({
+          apiKey: process.env.GEMINI_API_KEY,
+          prompt,
+          systemInstruction
+        });
+        return reply;
+      } catch (fallbackErr) {
+        throw fallbackErr;
+      }
+    }
+
     if (err.code === 'INVALID_KEY') {
       await updateUserKeyStatus(supabaseAdmin, userId, 'invalid');
     } else if (err.code === 'RATE_LIMITED') {
@@ -148,3 +175,4 @@ User Context: ${context ? JSON.stringify(context) : 'General candidate'}`;
     throw err;
   }
 }
+

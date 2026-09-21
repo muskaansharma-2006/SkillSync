@@ -150,8 +150,8 @@ window.BYOKManager = (function () {
       badge.className = 'badge badge-amber';
       badge.innerHTML = `<i class="fa-solid fa-hourglass-half"></i> Rate Limited`;
     } else {
-      badge.className = 'badge badge-secondary';
-      badge.innerHTML = `<i class="fa-solid fa-key"></i> Key Required`;
+      badge.className = 'badge badge-cyan';
+      badge.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Shared Key Active`;
     }
 
     if (connectBtn) connectBtn.style.display = hasKey ? 'none' : 'inline-flex';
@@ -161,16 +161,16 @@ window.BYOKManager = (function () {
     if (input) {
       input.placeholder = hasKey
         ? '•••••••••••••••••••••••••••• (Key encrypted)'
-        : 'Paste Gemini API Key (e.g. AIzaSy...)';
+        : 'Optional: Paste custom Gemini API key...';
       input.disabled = status === 'connecting';
     }
 
     if (statusNote) {
       if (hasKey) {
         const timeStr = updatedAt ? new Date(updatedAt).toLocaleDateString() : 'recently';
-        statusNote.innerHTML = `<i class="fa-solid fa-lock" style="color: var(--accent-green);"></i> Key encrypted (AES-256-GCM) & saved ${timeStr}.`;
+        statusNote.innerHTML = `<i class="fa-solid fa-lock" style="color: var(--accent-green);"></i> Personal key saved ${timeStr}.`;
       } else {
-        statusNote.innerHTML = `<i class="fa-solid fa-circle-info"></i> Obtain a free API key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">Google AI Studio</a>.`;
+        statusNote.innerHTML = `<i class="fa-solid fa-sparkles" style="color: var(--accent-green);"></i> Backend Gemini AI active. Adding a personal key is completely optional.`;
       }
     }
   }

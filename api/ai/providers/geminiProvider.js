@@ -1,5 +1,5 @@
-const GEMINI_PRIMARY_MODEL = 'gemini-2.5-flash';
-const GEMINI_FALLBACK_MODEL = 'gemini-2.5-flash-lite';
+const GEMINI_PRIMARY_MODEL = process.env.GEMINI_PRIMARY_MODEL || 'gemini-3.6-flash';
+const GEMINI_FALLBACK_MODEL = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash-lite';
 
 function getApiUrl(modelName, apiKey) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
@@ -25,7 +25,7 @@ async function callGeminiApi(apiKey, requestBody) {
     throw err;
   }
 
-  // If primary model (gemini-2.5-flash) returned a non-200 error, attempt fallback to gemini-2.5-flash-lite
+  // If primary model returned a non-200 error, attempt fallback model
   if (!response.ok) {
     console.warn(`[GeminiProvider] Primary model ${GEMINI_PRIMARY_MODEL} returned status ${response.status}. Retrying with fallback model ${GEMINI_FALLBACK_MODEL}...`);
     try {

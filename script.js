@@ -116,27 +116,27 @@ async function initializeApplication() {
   const page = getPageName();
   if (page === "index" || page === "" || page === "index.html") {
     initCandidateDashboard();
-  } else if (page === "assessments.html") {
+  } else if (page === "assessments.html" || page.includes("assessments")) {
     initAssessmentsPage();
-  } else if (page === "practice.html") {
+  } else if (page === "practice.html" || page.includes("practice")) {
     initPracticePage();
-  } else if (page === "assessment.html" || page === "assessment-details.html" || document.getElementById("runCodeBtn")) {
+  } else if (page === "assessment.html" || page.includes("assessment") || document.getElementById("mcqQuestionTitle") || document.getElementById("runCodeBtn")) {
     initPracticalAssessmentSimulation();
-  } else if (page === "result.html") {
+  } else if (page === "result.html" || page.includes("result")) {
     initResultPage();
-  } else if (page === "skill-gap.html") {
+  } else if (page === "skill-gap.html" || page.includes("skill-gap")) {
     initSkillGapPage();
-  } else if (page === "career-recommendation.html") {
+  } else if (page === "career-recommendation.html" || page.includes("career")) {
     initCareerRecommendationPage();
-  } else if (page === "passport.html") {
+  } else if (page === "passport.html" || page.includes("passport")) {
     initPassportPage();
-  } else if (page === "recruiter.html") {
+  } else if (page === "recruiter.html" || page.includes("recruiter")) {
     initRecruiterDashboard();
-  } else if (page === "candidate.html") {
+  } else if (page === "candidate.html" || page.includes("candidate")) {
     initCandidateProfileView();
-  } else if (page === "history.html") {
+  } else if (page === "history.html" || page.includes("history")) {
     initHistoryPage();
-  } else if (page === "mentor.html") {
+  } else if (page === "mentor.html" || page.includes("mentor")) {
     initAIMentorPage();
   }
 }
@@ -173,8 +173,11 @@ if (document.readyState === "loading") {
 
 // Utility to parse current HTML filename
 function getPageName() {
-  const path = window.location.pathname;
-  return path.substring(path.lastIndexOf('/') + 1);
+  let path = window.location.pathname || "";
+  let name = path.substring(path.lastIndexOf('/') + 1);
+  if (name.includes('?')) name = name.split('?')[0];
+  if (name.includes('#')) name = name.split('#')[0];
+  return name.toLowerCase() || "index.html";
 }
 
 // Navigation active state setup
